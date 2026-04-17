@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Feature Image Switcher</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#f4f4f2;
+      --text:#141414;
+      --muted:#6f6f72;
+      --line:#d4d4d1;
+      --link:#355393;
+      --container:1220px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+    body{
+      background:var(--bg);
+      color:var(--text);
+      font-family:"Inter",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    }
+
+    .page{
+      padding:30px 18px 22px;
+    }
+
+    .container{
+      width:100%;
+      max-width:var(--container);
+      margin:0 auto;
+    }
+
+    .layout{
+      display:grid;
+      grid-template-columns:minmax(320px, 1fr) minmax(420px, 650px);
+      gap:30px;
+      align-items:start;
+    }
+
+    .features{
+      padding-top:12px;
+    }
+
+    .feature-item{
+      border-bottom:1px solid var(--line);
+    }
+
+    .feature-item:last-child{
+      border-bottom:none;
+    }
+
+    .feature-trigger{
+      width:100%;
+      border:none;
+      background:transparent;
+      padding:18px 0 16px;
+      text-align:left;
+      cursor:pointer;
+      color:inherit;
+    }
+
+    .feature-title{
+      margin:0;
+      font-size:26px;
+      line-height:1.2;
+      font-weight:500;
+      letter-spacing:-0.03em;
+    }
+
+    .feature-link{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      margin-top:16px;
+      color:var(--link);
+      text-decoration:none;
+      font-size:18px;
+      line-height:1.2;
+      font-weight:700;
+      transition:transform .22s ease, opacity .22s ease;
+    }
+
+    .feature-item:hover .feature-link{
+      transform:translateX(2px);
+    }
+
+    .feature-link::before{
+      content:"+";
+      font-size:28px;
+      line-height:1;
+      font-weight:400;
+      transform:translateY(-1px);
+    }
+
+    .feature-panel{
+      display:grid;
+      grid-template-rows:0fr;
+      transition:grid-template-rows .35s ease;
+    }
+
+    .feature-panel-inner{
+      overflow:hidden;
+    }
+
+    .feature-item.is-active .feature-panel{
+      grid-template-rows:1fr;
+    }
+
+    .feature-item.is-active .feature-link{
+      opacity:0;
+      pointer-events:none;
+      height:0;
+      margin-top:0;
+      overflow:hidden;
+    }
+
+    .feature-desc{
+      margin:0 0 24px;
+      max-width:580px;
+      color:var(--muted);
+      font-size:16px;
+      line-height:1.7;
+      letter-spacing:-0.01em;
+    }
+
+    .visual{
+      position:relative;
+    }
+
+    .visual-stage{
+      position:relative;
+      width:100%;
+      aspect-ratio: 1.18 / 1;
+      overflow:hidden;
+      background:#ddd8d0;
+    }
+
+    .visual-image{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+      will-change:transform, opacity;
+    }
+
+    .visual-image.current{
+      z-index:1;
+    }
+
+    .visual-image.enter{
+      z-index:2;
+      animation:slideIn .56s cubic-bezier(.2,.7,.2,1) forwards;
+    }
+
+    .visual-image.leave{
+      z-index:1;
+      animation:fadeOut .4s ease forwards;
+    }
+
+    @keyframes slideIn{
+      from{
+        opacity:.65;
+        transform:translateX(8%);
+      }
+      to{
+        opacity:1;
+        transform:translateX(0);
+      }
+    }
+
+    @keyframes fadeOut{
+      from{opacity:1}
+      to{opacity:0}
+    }
+
+    .mobile-caption{
+      display:none;
+      margin-top:14px;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.6;
+    }
+
+    @media (max-width: 900px){
+      .layout{
+        grid-template-columns:1fr;
+        gap:20px;
+      }
+
+      .visual{
+        order:-1;
+      }
+
+      .features{
+        padding-top:0;
+      }
+
+      .feature-title{
+        font-size:22px;
+      }
+
+      .feature-desc{
+        max-width:none;
+        font-size:15px;
+        margin-bottom:20px;
+      }
+    }
+
+    @media (max-width: 640px){
+      .page{
+        padding:16px 14px 22px;
+      }
+
+      .layout{
+        gap:16px;
+      }
+
+      .visual-stage{
+        aspect-ratio: 1.05 / 1;
+      }
+
+      .feature-trigger{
+        padding:16px 0 14px;
+      }
+
+      .feature-title{
+        font-size:18px;
+      }
+
+      .feature-link{
+        margin-top:12px;
+        font-size:16px;
+      }
+
+      .feature-link::before{
+        font-size:24px;
+      }
+
+      .feature-desc{
+        font-size:14px;
+        line-height:1.65;
+        margin-bottom:16px;
+      }
+
+      .mobile-caption{
+        display:block;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="container">
+      <div class="layout">
+        <div class="features" id="features">
+          <article class="feature-item is-active" data-key="family">
+            <button class="feature-trigger" type="button" data-key="family" aria-expanded="false">
+              <h2 class="feature-title">Family Owned, American Made</h2>
+            </button>
+            <a class="feature-link" href="#" data-key="family">Read More</a>
+            <div class="feature-panel" aria-hidden="true">
+              <div class="feature-panel-inner">
+                <p class="feature-desc">
+                  Built on craftsmanship and continuity, every surface reflects generations of care, precision, and a commitment to making products close to home.
+                </p>
+              </div>
+            </div>
+          </article>
+
+          <article class="feature-item" data-key="visionary">
+            <button class="feature-trigger" type="button" data-key="visionary" aria-expanded="true">
+              <h2 class="feature-title">Visionary Design</h2>
+            </button>
+            <a class="feature-link" href="#" data-key="visionary">Read More</a>
+            <div class="feature-panel" aria-hidden="false">
+              <div class="feature-panel-inner">
+                <p class="feature-desc">
+                  Every Cambria surface begins with creative vision, innovation, and endless possibilities to create unique designs that inspire and elevate every space.
+                </p>
+              </div>
+            </div>
+          </article>
+
+          <article class="feature-item" data-key="performance">
+            <button class="feature-trigger" type="button" data-key="performance" aria-expanded="false">
+              <h2 class="feature-title">Performance Perfected</h2>
+            </button>
+            <a class="feature-link" href="#" data-key="performance">Read More</a>
+            <div class="feature-panel" aria-hidden="true">
+              <div class="feature-panel-inner">
+                <p class="feature-desc">
+                  Engineered for everyday life, our surfaces bring together durability, easy care, and refined finishes that hold up beautifully in the busiest spaces.
+                </p>
+              </div>
+            </div>
+          </article>
+
+          <article class="feature-item" data-key="service">
+            <button class="feature-trigger" type="button" data-key="service" aria-expanded="false">
+              <h2 class="feature-title">Superior Service</h2>
+            </button>
+            <a class="feature-link" href="#" data-key="service">Read More</a>
+            <div class="feature-panel" aria-hidden="true">
+              <div class="feature-panel-inner">
+                <p class="feature-desc">
+                  From selection to installation support, our team helps every step feel easier, faster, and more personal—so the final result feels seamless.
+                </p>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <div class="visual">
+          <div class="visual-stage" id="visualStage" aria-live="polite"></div>
+          <p class="mobile-caption">点击左侧标题或 Read More，可切换右侧图片和当前展开内容。</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const imageMap = {
+      family: { src: '../../assets/images/pic01.webp', alt: 'Warm interior for Family Owned, American Made' },
+      visionary: { src: '../../assets/images/pic02.webp', alt: 'Elegant kitchen interior for Visionary Design' },
+      performance: { src: '../../assets/images/pic03.webp', alt: 'Modern kitchen interior for Performance Perfected' },
+      service: { src: '../../assets/images/pic04.webp', alt: 'Refined interior for Superior Service' }
+    };
+
+    const features = document.getElementById('features');
+    const stage = document.getElementById('visualStage');
+    let activeKey = 'visionary';
+
+    function mountInitialImage() {
+      const img = document.createElement('img');
+      img.className = 'visual-image current';
+      img.src = imageMap[activeKey].src;
+      img.alt = imageMap[activeKey].alt;
+      stage.appendChild(img);
+    }
+
+    function swapImage(key) {
+      if (key === activeKey) return;
+      const current = stage.querySelector('.visual-image.current');
+      const next = document.createElement('img');
+      next.className = 'visual-image enter current';
+      next.src = imageMap[key].src;
+      next.alt = imageMap[key].alt;
+
+      if (current) {
+        current.classList.remove('current');
+        current.classList.add('leave');
+      }
+
+      stage.appendChild(next);
+
+      next.addEventListener('animationend', () => {
+        next.classList.remove('enter');
+      }, { once: true });
+
+      if (current) {
+        current.addEventListener('animationend', () => current.remove(), { once: true });
+      }
+
+      activeKey = key;
+    }
+
+    function setActive(key) {
+      const items = features.querySelectorAll('.feature-item');
+      items.forEach(item => {
+        const isActive = item.dataset.key === key;
+        item.classList.toggle('is-active', isActive);
+        const trigger = item.querySelector('.feature-trigger');
+        const panel = item.querySelector('.feature-panel');
+        trigger.setAttribute('aria-expanded', isActive ? 'true' : 'false');
+        panel.setAttribute('aria-hidden', isActive ? 'false' : 'true');
+      });
+      swapImage(key);
+    }
+
+    features.addEventListener('click', (event) => {
+      const target = event.target.closest('[data-key]');
+      if (!target) return;
+      event.preventDefault();
+      setActive(target.dataset.key);
+    });
+
+    mountInitialImage();
+  </script>
+</body>
+</html>

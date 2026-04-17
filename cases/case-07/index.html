@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GTM AI Strategy Carousel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/swiper@11/swiper-bundle.min.css" />
+  <style>
+    :root{
+      --bg:#f4f4f2;
+      --text:#111111;
+      --muted:#4b5563;
+      --line:#d6d6d3;
+      --card:#f6f6f4;
+      --shadow:0 12px 30px rgba(0,0,0,.05);
+      --container:1180px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{
+      margin:0;
+      padding:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family:"Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+      "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      overflow-x:hidden;
+    }
+
+    body{
+      min-height:100vh;
+    }
+
+    .page{
+      padding:40px 20px 46px;
+    }
+
+    .container{
+      width:100%;
+      max-width:var(--container);
+      margin:0 auto;
+    }
+
+    .section-head{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:20px;
+      margin-bottom:54px;
+    }
+
+    .section-title{
+      margin:0;
+      font-size:42px;
+      line-height:.98;
+      font-weight:900;
+      letter-spacing:-0.05em;
+      max-width:760px;
+    }
+
+    .nav-group{
+      display:flex;
+      align-items:center;
+      gap:16px;
+      flex:0 0 auto;
+      padding-top:6px;
+    }
+
+    .nav-btn{
+      width:56px;
+      height:56px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:transparent;
+      color:#1f1f1f;
+      display:grid;
+      place-items:center;
+      cursor:pointer;
+      transition:transform .22s ease, background-color .22s ease, border-color .22s ease, box-shadow .22s ease, opacity .22s ease;
+    }
+
+    .nav-btn:hover{
+      transform:translateY(-2px);
+      background:#ffffff;
+      border-color:#bdbdb8;
+      box-shadow:0 8px 22px rgba(0,0,0,.06);
+    }
+
+    .nav-btn.swiper-button-disabled{
+      opacity:.45;
+      cursor:default;
+      box-shadow:none;
+      transform:none;
+    }
+
+    .nav-icon{
+      width:16px;
+      height:16px;
+      display:block;
+      position:relative;
+    }
+
+    .nav-icon::before,
+    .nav-icon::after{
+      content:"";
+      position:absolute;
+      background:currentColor;
+      border-radius:999px;
+    }
+
+    .nav-icon.prev::before{
+      width:14px;
+      height:2.2px;
+      top:7px;
+      left:1px;
+    }
+
+    .nav-icon.prev::after{
+      width:9px;
+      height:9px;
+      border-left:2.2px solid currentColor;
+      border-bottom:2.2px solid currentColor;
+      background:transparent;
+      transform:rotate(45deg);
+      top:3px;
+      left:1px;
+      border-radius:0;
+    }
+
+    .nav-icon.next::before{
+      width:14px;
+      height:2.2px;
+      top:7px;
+      left:1px;
+    }
+
+    .nav-icon.next::after{
+      width:9px;
+      height:9px;
+      border-right:2.2px solid currentColor;
+      border-top:2.2px solid currentColor;
+      background:transparent;
+      transform:rotate(45deg);
+      top:3px;
+      right:1px;
+      border-radius:0;
+    }
+
+    .carousel-wrap{
+      position:relative;
+      overflow:hidden;
+      padding-top:8px;
+      margin-top:-8px;
+    }
+
+    .swiper{
+      overflow:visible;
+    }
+
+    .swiper-slide{
+      height:auto;
+    }
+
+    .insight-card{
+      height:100%;
+      background:var(--card);
+      border:1px solid var(--line);
+      padding:28px 28px 24px;
+      transition:transform .28s ease, border-color .28s ease, box-shadow .28s ease;
+      display:flex;
+      flex-direction:column;
+      text-decoration:none;
+      color:inherit;
+    }
+
+    .insight-card:hover{
+      transform:translateY(-4px);
+      border-color:#1e1e1e;
+      box-shadow:var(--shadow);
+    }
+
+    .cover{
+      position:relative;
+      aspect-ratio: 16 / 11;
+      width:100%;
+      overflow:hidden;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,.22), transparent 32%),
+        radial-gradient(circle at 80% 15%, rgba(255,255,255,.16), transparent 22%),
+        linear-gradient(135deg, #4a14c8 0%, #6d28d9 42%, #7c3aed 66%, #b832f5 100%);
+      box-shadow:0 10px 24px rgba(93, 22, 198, .16);
+      margin-bottom:30px;
+    }
+
+    .cover::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        linear-gradient(rgba(255,255,255,.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.08) 1px, transparent 1px);
+      background-size:4px 4px, 4px 4px;
+      mix-blend-mode:screen;
+      opacity:.45;
+      pointer-events:none;
+    }
+
+    .cover::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        linear-gradient(150deg, transparent 64%, rgba(255,255,255,.28) 64.4%, transparent 65%) 72% 18%/34% 34% no-repeat,
+        linear-gradient(150deg, transparent 64%, rgba(255,255,255,.22) 64.4%, transparent 65%) 76% 38%/34% 34% no-repeat,
+        linear-gradient(150deg, transparent 64%, rgba(255,255,255,.18) 64.4%, transparent 65%) 82% 60%/32% 32% no-repeat,
+        linear-gradient(150deg, transparent 64%, rgba(255,255,255,.12) 64.4%, transparent 65%) 64% 66%/28% 28% no-repeat;
+      pointer-events:none;
+    }
+
+    .cover-inner{
+      position:absolute;
+      inset:0;
+      padding:18px 20px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      color:#fff;
+    }
+
+    .eyebrow{
+      font-size:10px;
+      line-height:1;
+      letter-spacing:.18em;
+      text-transform:uppercase;
+      opacity:.85;
+      font-weight:600;
+    }
+
+    .cover-copy h3{
+      margin:0 0 8px;
+      font-size:18px;
+      line-height:1.16;
+      font-weight:800;
+      letter-spacing:-0.03em;
+    }
+
+    .cover-copy p{
+      margin:0;
+      font-size:13px;
+      line-height:1.3;
+      font-weight:700;
+      opacity:.98;
+    }
+
+    .brand-pill{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:22px;
+      padding:0 8px;
+      border:1px solid rgba(255,255,255,.88);
+      font-size:12px;
+      font-weight:700;
+      line-height:1;
+      width:max-content;
+      backdrop-filter:blur(4px);
+      background:rgba(255,255,255,.06);
+    }
+
+    .card-title{
+      margin:0 0 16px;
+      font-size:25px;
+      line-height:1.34;
+      font-weight:800;
+      letter-spacing:-0.04em;
+      max-width:92%;
+    }
+
+    .card-desc{
+      margin:0;
+      font-size:17px;
+      line-height:1.5;
+      color:var(--muted);
+      max-width:92%;
+    }
+
+    .swiper-scrollbar{
+      position:static !important;
+      margin-top:28px;
+      height:3px !important;
+      background:rgba(0,0,0,.08);
+      border-radius:999px;
+      max-width:220px;
+      margin-left:auto;
+      margin-right:auto;
+    }
+
+    .swiper-scrollbar-drag{
+      background:#111 !important;
+      border-radius:999px;
+    }
+
+    @media (max-width: 1200px){
+      .section-title{
+        font-size:38px;
+      }
+    }
+
+    @media (max-width: 991px){
+      .section-head{
+        margin-bottom:34px;
+      }
+
+      .section-title{
+        font-size:36px;
+        max-width:620px;
+      }
+
+      .insight-card{
+        padding:22px 22px 20px;
+      }
+
+      .card-title{
+        font-size:22px;
+      }
+
+      .card-desc{
+        font-size:16px;
+      }
+    }
+
+    @media (max-width: 640px){
+      .page{
+        padding:24px 14px 34px;
+      }
+
+      .section-head{
+        flex-direction:column;
+        align-items:center;
+        gap:18px;
+        margin-bottom:24px;
+      }
+
+      .section-title{
+        font-size:24px;
+        max-width:none;
+      }
+
+      .nav-group{
+        padding-top:0;
+      }
+
+      .nav-btn{
+        width:48px;
+        height:48px;
+      }
+
+      .insight-card{
+        padding:16px 16px 18px;
+      }
+
+      .cover{
+        margin-bottom:20px;
+      }
+
+      .card-title{
+        font-size:18px;
+        margin-bottom:12px;
+        max-width:none;
+      }
+
+      .card-desc{
+        font-size:15px;
+        max-width:none;
+      }
+
+      .swiper-scrollbar{
+        margin-top:20px;
+        max-width:150px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="container">
+      <div class="section-head">
+        <h1 class="section-title">Drive your GTM AI strategy</h1>
+
+        <div class="nav-group" aria-label="轮播控制">
+          <button class="nav-btn swiper-prev" type="button" aria-label="上一张">
+            <span class="nav-icon prev"></span>
+          </button>
+          <button class="nav-btn swiper-next" type="button" aria-label="下一张">
+            <span class="nav-icon next"></span>
+          </button>
+        </div>
+      </div>
+
+      <div class="carousel-wrap">
+        <div class="swiper gtm-swiper">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide">
+              <a class="insight-card" href="#">
+                <div class="cover">
+                  <div class="cover-inner">
+                    <span class="eyebrow">GTM AI</span>
+                    <div class="cover-copy">
+                      <h3>Build vs. Buy</h3>
+                      <p>The power of a GTM AI platform</p>
+                    </div>
+                    <span class="brand-pill">copy.ai</span>
+                  </div>
+                </div>
+                <h2 class="card-title">Invest in Purpose-Built Solution, or DIY?</h2>
+                <p class="card-desc">How a purpose-built platform accelerates your AI strategy for a competitive edge.</p>
+              </a>
+            </div>
+
+            <div class="swiper-slide">
+              <a class="insight-card" href="#">
+                <div class="cover">
+                  <div class="cover-inner">
+                    <span class="eyebrow">GTM AI</span>
+                    <div class="cover-copy">
+                      <h3>What is GTM Bloat?</h3>
+                      <p>Its root causes and solutions</p>
+                    </div>
+                    <span class="brand-pill">copy.ai</span>
+                  </div>
+                </div>
+                <h2 class="card-title">GTM AI: A New Approach for Getting Rid of GTM Bloat</h2>
+                <p class="card-desc">GTM Bloat is the biggest problem leaders need to solve in 2024 and beyond. AI holds the key.</p>
+              </a>
+            </div>
+
+            <div class="swiper-slide">
+              <a class="insight-card" href="#">
+                <div class="cover">
+                  <div class="cover-inner">
+                    <span class="eyebrow">GTM AI</span>
+                    <div class="cover-copy">
+                      <h3>The First GTM AI Platform</h3>
+                      <p>Future-proof your GTM</p>
+                    </div>
+                    <span class="brand-pill">copy.ai</span>
+                  </div>
+                </div>
+                <h2 class="card-title">How to Go from GTM Bloat to Velocity</h2>
+                <p class="card-desc">Meet the world's first GTM AI platform and discover how it can unlock true velocity across your entire team.</p>
+              </a>
+            </div>
+
+            <div class="swiper-slide">
+              <a class="insight-card" href="#">
+                <div class="cover">
+                  <div class="cover-inner">
+                    <span class="eyebrow">GTM AI</span>
+                    <div class="cover-copy">
+                      <h3>AI Readiness</h3>
+                      <p>Build the right operating model</p>
+                    </div>
+                    <span class="brand-pill">copy.ai</span>
+                  </div>
+                </div>
+                <h2 class="card-title">How Modern GTM Teams Prepare for AI Adoption</h2>
+                <p class="card-desc">Create the foundations, systems, and workflows needed to make AI useful across marketing, sales, and operations.</p>
+              </a>
+            </div>
+
+            <div class="swiper-slide">
+              <a class="insight-card" href="#">
+                <div class="cover">
+                  <div class="cover-inner">
+                    <span class="eyebrow">GTM AI</span>
+                    <div class="cover-copy">
+                      <h3>Scale Smarter</h3>
+                      <p>Turn systems into leverage</p>
+                    </div>
+                    <span class="brand-pill">copy.ai</span>
+                  </div>
+                </div>
+                <h2 class="card-title">A Practical Playbook for Scaling GTM Execution with AI</h2>
+                <p class="card-desc">Unify planning, execution, and feedback loops so teams can move faster without creating more process overhead.</p>
+              </a>
+            </div>
+          </div>
+          <div class="swiper-scrollbar"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://unpkg.com/swiper@11/swiper-bundle.min.js"></script>
+  <script>
+    new Swiper('.gtm-swiper', {
+      slidesPerView: 1,
+      spaceBetween: 18,
+      speed: 700,
+      grabCursor: true,
+      watchOverflow: true,
+      navigation: {
+        nextEl: '.swiper-next',
+        prevEl: '.swiper-prev'
+      },
+      scrollbar: {
+        el: '.swiper-scrollbar',
+        draggable: true
+      },
+      breakpoints: {
+        640: {
+          slidesPerView: 2,
+          spaceBetween: 22
+        },
+        1024: {
+          slidesPerView: 3,
+          spaceBetween: 40
+        }
+      }
+    });
+  </script>
+</body>
+</html>

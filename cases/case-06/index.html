@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bootstrap Filter Cards Layout</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <style>
+    :root{
+      --page-bg:#f5f4f2;
+      --card-bg:#efeeeb;
+      --text:#111111;
+      --muted:#6a6a6a;
+      --line:#d2d0ca;
+      --pill:#f2ede4;
+    }
+
+    html,body{
+      margin:0;
+      padding:0;
+      background:var(--page-bg);
+      color:var(--text);
+      font-family:"Inter",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    }
+
+    .page-shell{
+      padding:34px 0 40px;
+    }
+
+    .layout-wrap{
+      max-width:1380px;
+    }
+
+    .filter-col{
+      width:100%;
+      max-width:270px;
+    }
+
+    .filter-panel{
+      position:sticky;
+      top:24px;
+    }
+
+    .filter-group{
+      border-top:1px solid #bfbcb5;
+      padding-top:14px;
+      margin-bottom:28px;
+    }
+
+    .filter-title{
+      font-size:1.05rem;
+      font-weight:700;
+      margin-bottom:8px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      cursor:pointer;
+      user-select:none;
+    }
+
+    .filter-title .bi{
+      font-size:1rem;
+      color:#222;
+    }
+
+    .form-check{
+      margin-bottom:12px;
+      padding-left:2rem;
+    }
+
+    .form-check-input{
+      width:1.35rem;
+      height:1.35rem;
+      margin-top:.05rem;
+      margin-left:-2rem;
+      border-color:#4b4b4b;
+      border-radius:.3rem;
+      cursor:pointer;
+    }
+
+    .form-check-input:checked{
+      background-color:#111;
+      border-color:#111;
+    }
+
+    .form-check-label{
+      font-size:1rem;
+      color:#000;
+      cursor:pointer;
+    }
+
+    .cards-grid{
+      row-gap:28px;
+    }
+
+    .resource-card{
+      background:var(--card-bg);
+      border:none;
+      border-radius:22px;
+      min-height:310px;
+      box-shadow:none;
+      transition:transform .28s ease, box-shadow .28s ease;
+      overflow:hidden;
+    }
+
+    .resource-card:hover{
+      transform:translateY(-4px);
+      box-shadow:0 16px 28px rgba(0,0,0,.06);
+    }
+
+    .resource-card .card-body{
+      padding:28px 28px 24px;
+      display:flex;
+      flex-direction:column;
+      min-height:310px;
+    }
+
+    .card-icon{
+      width:54px;
+      height:54px;
+      display:grid;
+      place-items:center;
+      margin-bottom:20px;
+      color:#1b1b1b;
+      font-size:2rem;
+      line-height:1;
+    }
+
+    .resource-title{
+      font-size:1.1rem;
+      line-height:1.18;
+      font-weight:800;
+      letter-spacing:-0.02em;
+      margin-bottom:12px;
+      max-width:260px;
+    }
+
+    .resource-desc{
+      color:var(--muted);
+      font-size:1rem;
+      line-height:1.45;
+      margin-bottom:26px;
+      max-width:280px;
+      display:-webkit-box;
+      -webkit-line-clamp:3;
+      -webkit-box-orient:vertical;
+      overflow:hidden;
+    }
+
+    .card-meta{
+      margin-top:auto;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+    }
+
+    .tag-pill{
+      display:inline-flex;
+      align-items:center;
+      min-height:28px;
+      padding:0 10px;
+      border-radius:6px;
+      background:var(--pill);
+      color:#111;
+      font-size:.95rem;
+      font-weight:500;
+    }
+
+    .arrow-link{
+      width:40px;
+      height:40px;
+      display:grid;
+      place-items:center;
+      border-radius:999px;
+      color:#111;
+      text-decoration:none;
+      transition:transform .25s ease, background-color .25s ease;
+      font-size:1.5rem;
+      flex:0 0 auto;
+    }
+
+    .resource-card:hover .arrow-link{
+      transform:translateX(4px);
+      background:rgba(0,0,0,.04);
+    }
+
+    .mobile-filter-trigger{
+      margin-bottom:18px;
+    }
+
+    .offcanvas{
+      --bs-offcanvas-width: 320px;
+    }
+
+    .offcanvas .filter-panel{
+      position:static;
+    }
+
+    .helper-note{
+      color:#6b7280;
+      font-size:.92rem;
+      margin-bottom:18px;
+    }
+
+    @media (max-width: 991.98px){
+      .page-shell{
+        padding:22px 0 28px;
+      }
+
+      .resource-card .card-body{
+        min-height:280px;
+      }
+    }
+
+    @media (max-width: 575.98px){
+      .container-fluid{
+        padding-left:16px;
+        padding-right:16px;
+      }
+
+      .resource-card{
+        border-radius:18px;
+      }
+
+      .resource-card .card-body{
+        padding:22px 20px 20px;
+        min-height:unset;
+      }
+
+      .resource-title{
+        font-size:1.05rem;
+      }
+
+      .resource-desc{
+        font-size:.96rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page-shell">
+    <div class="container-fluid layout-wrap">
+      <div class="d-lg-none mobile-filter-trigger">
+        <button class="btn btn-outline-dark rounded-pill px-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileFilters" aria-controls="mobileFilters">
+          <i class="bi bi-sliders me-2"></i>筛选
+        </button>
+      </div>
+
+      <div class="row g-4 g-xl-5 align-items-start">
+        <aside class="col-lg-3 d-none d-lg-block">
+          <div class="filter-col">
+            <div class="filter-panel">
+              <div class="filter-group">
+                <div class="filter-title" data-bs-toggle="collapse" data-bs-target="#desktopTeam" aria-expanded="true" aria-controls="desktopTeam">
+                  <span>Team</span>
+                  <i class="bi bi-chevron-up"></i>
+                </div>
+                <div class="collapse show" id="desktopTeam">
+                  <div class="pt-1">
+                    <div class="form-check">
+                      <input class="form-check-input filter-checkbox" type="checkbox" value="marketing" id="teamMarketing" checked data-filter-group="team">
+                      <label class="form-check-label" for="teamMarketing">Marketing</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input filter-checkbox" type="checkbox" value="sales" id="teamSales" data-filter-group="team">
+                      <label class="form-check-label" for="teamSales">Sales</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="filter-group">
+                <div class="filter-title" data-bs-toggle="collapse" data-bs-target="#desktopTask" aria-expanded="true" aria-controls="desktopTask">
+                  <span>Task</span>
+                  <i class="bi bi-chevron-up"></i>
+                </div>
+                <div class="collapse show" id="desktopTask">
+                  <div class="pt-1">
+                    <div class="form-check">
+                      <input class="form-check-input filter-checkbox" type="checkbox" value="find" id="taskFind" checked data-filter-group="task">
+                      <label class="form-check-label" for="taskFind">Find</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input filter-checkbox" type="checkbox" value="ask" id="taskAsk" checked data-filter-group="task">
+                      <label class="form-check-label" for="taskAsk">Ask</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input filter-checkbox" type="checkbox" value="write" id="taskWrite" data-filter-group="task">
+                      <label class="form-check-label" for="taskWrite">Write</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input filter-checkbox" type="checkbox" value="organize" id="taskOrganize" data-filter-group="task">
+                      <label class="form-check-label" for="taskOrganize">Organize</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <p class="helper-note">已预留好筛选结构，后续可直接给复选框和卡片添加 JS 过滤逻辑。</p>
+            </div>
+          </div>
+        </aside>
+
+        <section class="col-12 col-lg-9">
+          <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 cards-grid">
+            <div class="col">
+              <article class="card resource-card h-100 filter-card" data-team="marketing" data-task="find ask">
+                <div class="card-body">
+                  <div class="card-icon"><i class="bi bi-check-circle"></i></div>
+                  <h2 class="resource-title">Find and reuse approved content</h2>
+                  <p class="resource-desc">Skip the start-from-scratch phase. Dash helps you find content that’s already aligned, approved, and ready to repurpose.</p>
+                  <div class="card-meta">
+                    <span class="tag-pill">Marketing</span>
+                    <a href="#" class="arrow-link" aria-label="View more"><i class="bi bi-arrow-right"></i></a>
+                  </div>
+                </div>
+              </article>
+            </div>
+
+            <div class="col">
+              <article class="card resource-card h-100 filter-card" data-team="marketing" data-task="organize">
+                <div class="card-body">
+                  <div class="card-icon"><i class="bi bi-easel"></i></div>
+                  <h2 class="resource-title">Share final assets that are organized, polished, and ready to launch</h2>
+                  <p class="resource-desc">When it’s go-time, Dash helps you wrap it all up fast. Apply feedback, find the latest assets, and ship with confidence.</p>
+                  <div class="card-meta">
+                    <span class="tag-pill">Marketing</span>
+                    <a href="#" class="arrow-link" aria-label="View more"><i class="bi bi-arrow-right"></i></a>
+                  </div>
+                </div>
+              </article>
+            </div>
+
+            <div class="col">
+              <article class="card resource-card h-100 filter-card" data-team="marketing sales" data-task="find">
+                <div class="card-body">
+                  <div class="card-icon"><i class="bi bi-list-ul"></i></div>
+                  <h2 class="resource-title">How Dropbox Dash helps me stay on top of everything</h2>
+                  <p class="resource-desc">I use Dropbox Dash daily to find files, summarize meetings, and keep my work moving without digging through endless tabs.</p>
+                  <div class="card-meta">
+                    <span class="tag-pill">Marketing</span>
+                    <a href="#" class="arrow-link" aria-label="View more"><i class="bi bi-arrow-right"></i></a>
+                  </div>
+                </div>
+              </article>
+            </div>
+
+            <div class="col">
+              <article class="card resource-card h-100 filter-card" data-team="marketing" data-task="write">
+                <div class="card-body">
+                  <div class="card-icon"><i class="bi bi-pencil"></i></div>
+                  <h2 class="resource-title">How I use Dropbox Dash to create content faster</h2>
+                  <p class="resource-desc">I use Dropbox Dash to speed up my writing and publishing. From first brief to final draft, everything stays easier to find.</p>
+                  <div class="card-meta">
+                    <span class="tag-pill">Marketing</span>
+                    <a href="#" class="arrow-link" aria-label="View more"><i class="bi bi-arrow-right"></i></a>
+                  </div>
+                </div>
+              </article>
+            </div>
+
+            <div class="col">
+              <article class="card resource-card h-100 filter-card" data-team="marketing sales" data-task="ask organize">
+                <div class="card-body">
+                  <div class="card-icon"><i class="bi bi-building"></i></div>
+                  <h2 class="resource-title">How I use Dropbox Dash to keep teams aligned and informed</h2>
+                  <p class="resource-desc">As a product marketer, I use Dropbox Dash to find info fast and share updates in one place so cross-functional teams stay aligned.</p>
+                  <div class="card-meta">
+                    <span class="tag-pill">Marketing</span>
+                    <a href="#" class="arrow-link" aria-label="View more"><i class="bi bi-arrow-right"></i></a>
+                  </div>
+                </div>
+              </article>
+            </div>
+
+            <div class="col">
+              <article class="card resource-card h-100 filter-card" data-team="marketing" data-task="ask">
+                <div class="card-body">
+                  <div class="card-icon"><i class="bi bi-lightbulb"></i></div>
+                  <h2 class="resource-title">Plan campaigns faster with AI</h2>
+                  <p class="resource-desc">Dash helps marketers find and repurpose past work in seconds, so new campaign planning starts with context instead of guesswork.</p>
+                  <div class="card-meta">
+                    <span class="tag-pill">Marketing</span>
+                    <a href="#" class="arrow-link" aria-label="View more"><i class="bi bi-arrow-right"></i></a>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <div class="offcanvas offcanvas-start" tabindex="-1" id="mobileFilters" aria-labelledby="mobileFiltersLabel">
+    <div class="offcanvas-header">
+      <h2 class="offcanvas-title fs-5" id="mobileFiltersLabel">筛选</h2>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+      <div class="filter-panel">
+        <div class="filter-group">
+          <div class="filter-title" data-bs-toggle="collapse" data-bs-target="#mobileTeam" aria-expanded="true" aria-controls="mobileTeam">
+            <span>Team</span>
+            <i class="bi bi-chevron-up"></i>
+          </div>
+          <div class="collapse show" id="mobileTeam">
+            <div class="pt-1">
+              <div class="form-check">
+                <input class="form-check-input filter-checkbox" type="checkbox" value="marketing" id="mTeamMarketing" checked data-filter-group="team">
+                <label class="form-check-label" for="mTeamMarketing">Marketing</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input filter-checkbox" type="checkbox" value="sales" id="mTeamSales" data-filter-group="team">
+                <label class="form-check-label" for="mTeamSales">Sales</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <div class="filter-title" data-bs-toggle="collapse" data-bs-target="#mobileTask" aria-expanded="true" aria-controls="mobileTask">
+            <span>Task</span>
+            <i class="bi bi-chevron-up"></i>
+          </div>
+          <div class="collapse show" id="mobileTask">
+            <div class="pt-1">
+              <div class="form-check">
+                <input class="form-check-input filter-checkbox" type="checkbox" value="find" id="mTaskFind" checked data-filter-group="task">
+                <label class="form-check-label" for="mTaskFind">Find</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input filter-checkbox" type="checkbox" value="ask" id="mTaskAsk" checked data-filter-group="task">
+                <label class="form-check-label" for="mTaskAsk">Ask</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input filter-checkbox" type="checkbox" value="write" id="mTaskWrite" data-filter-group="task">
+                <label class="form-check-label" for="mTaskWrite">Write</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input filter-checkbox" type="checkbox" value="organize" id="mTaskOrganize" data-filter-group="task">
+                <label class="form-check-label" for="mTaskOrganize">Organize</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p class="helper-note mb-0">后续添加 JS 时，可直接读取 <code>.filter-checkbox</code> 和 <code>.filter-card</code> 的 data 属性。</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

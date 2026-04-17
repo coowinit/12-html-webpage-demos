@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Brazilian Culture Editorial Grid</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#f3f3f1;
+      --text:#ffffff;
+      --pill:#1d7df0;
+      --shadow:0 14px 28px rgba(0,0,0,.08);
+      --radius:18px;
+      --container:1680px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+    body{
+      background:var(--bg);
+      font-family:"Inter",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+      color:#111;
+    }
+
+    .page{
+      padding:24px 22px 28px;
+    }
+
+    .container{
+      width:100%;
+      max-width:var(--container);
+      margin:0 auto;
+    }
+
+    .editorial-grid{
+      display:grid;
+      grid-template-columns:1.18fr 0.76fr 0.76fr;
+      grid-template-areas:
+        "hero beads statue"
+        "hero photo music";
+      gap:22px;
+      align-items:stretch;
+    }
+
+    .card{
+      position:relative;
+      overflow:hidden;
+      border-radius:var(--radius);
+      min-height:280px;
+      text-decoration:none;
+      color:var(--text);
+      background:#d9d9d9;
+      box-shadow:0 0 0 1px rgba(0,0,0,.05) inset;
+    }
+
+    .card.hero{grid-area:hero; min-height:740px;}
+    .card.beads{grid-area:beads; min-height:358px;}
+    .card.statue{grid-area:statue; min-height:358px;}
+    .card.photo{grid-area:photo; min-height:358px;}
+    .card.music{grid-area:music; min-height:358px;}
+
+    .card > img{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+      transition:transform .9s ease, filter .35s ease;
+      transform-origin:center center;
+    }
+
+    .card::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        linear-gradient(180deg, rgba(0,0,0,0) 36%, rgba(0,0,0,.14) 56%, rgba(0,0,0,.72) 100%);
+      pointer-events:none;
+    }
+
+    .card:hover > img{
+      transform:scale(1.06);
+      filter:saturate(1.02);
+    }
+
+    .card-content{
+      position:absolute;
+      left:24px;
+      right:24px;
+      bottom:22px;
+      z-index:1;
+      transform:translateY(0);
+      transition:transform .28s ease;
+    }
+
+    .card:hover .card-content{
+      transform:translateY(-2px);
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      min-height:34px;
+      padding:0 14px;
+      border-radius:8px;
+      background:var(--pill);
+      color:#fff;
+      font-size:13px;
+      font-weight:700;
+      line-height:1;
+      margin-bottom:14px;
+      box-shadow:0 8px 16px rgba(29,125,240,.18);
+    }
+
+    .title{
+      margin:0 0 8px;
+      font-size:24px;
+      line-height:1.18;
+      font-weight:800;
+      letter-spacing:-0.03em;
+      max-width:92%;
+      text-shadow:0 2px 10px rgba(0,0,0,.24);
+    }
+
+    .hero .title{
+      font-size:28px;
+      max-width:78%;
+    }
+
+    .desc{
+      margin:0;
+      font-size:15px;
+      line-height:1.35;
+      font-weight:500;
+      color:rgba(255,255,255,.94);
+      max-width:92%;
+      text-shadow:0 2px 8px rgba(0,0,0,.24);
+    }
+
+    @media (max-width: 1180px){
+      .editorial-grid{
+        grid-template-columns:1fr 1fr;
+        grid-template-areas:
+          "hero hero"
+          "beads statue"
+          "photo music";
+      }
+
+      .card.hero{
+        min-height:620px;
+      }
+
+      .hero .title{
+        max-width:70%;
+      }
+    }
+
+    @media (max-width: 720px){
+      .page{
+        padding:16px 14px 22px;
+      }
+
+      .editorial-grid{
+        grid-template-columns:1fr;
+        grid-template-areas:
+          "hero"
+          "beads"
+          "statue"
+          "photo"
+          "music";
+        gap:16px;
+      }
+
+      .card,
+      .card.hero,
+      .card.beads,
+      .card.statue,
+      .card.photo,
+      .card.music{
+        min-height:0;
+        aspect-ratio:1.18 / 1;
+      }
+
+      .card-content{
+        left:16px;
+        right:16px;
+        bottom:16px;
+      }
+
+      .pill{
+        min-height:30px;
+        padding:0 12px;
+        font-size:12px;
+        margin-bottom:10px;
+      }
+
+      .title,
+      .hero .title{
+        font-size:18px;
+        max-width:100%;
+        margin-bottom:6px;
+      }
+
+      .desc{
+        font-size:14px;
+        max-width:100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="container">
+      <div class="editorial-grid">
+        <a class="card hero" href="#">
+          <img src="../../assets/images/pic01.webp" alt="Municipal Theater of Rio">
+          <div class="card-content">
+            <span class="pill">Brazilian culture</span>
+            <h2 class="title">Performing at the Municipal Theater of Rio</h2>
+            <p class="desc">The only theater in the country to maintain three artistic bodies</p>
+          </div>
+        </a>
+
+        <a class="card beads" href="#">
+          <img src="../../assets/images/pic02.webp" alt="Museu Do Índio beads">
+          <div class="card-content">
+            <span class="pill">Brazilian culture</span>
+            <h2 class="title">Inside the Museu Do Indio</h2>
+            <p class="desc">Discover a world made of beads</p>
+          </div>
+        </a>
+
+        <a class="card statue" href="#">
+          <img src="../../assets/images/pic03.webp" alt="Sanctuary of Christ the Redeemer">
+          <div class="card-content">
+            <span class="pill">Brazilian culture</span>
+            <h2 class="title">Sanctuary of Christ the Redeemer</h2>
+            <p class="desc">The iconic statue overlooking the city</p>
+          </div>
+        </a>
+
+        <a class="card photo" href="#">
+          <img src="../../assets/images/pic04.webp" alt="Rio contemporary photography">
+          <div class="card-content">
+            <span class="pill">Brazilian culture</span>
+            <h2 class="title">Rio in Contemporary Photography</h2>
+            <p class="desc">Landscapes in Brazilian contemporary photography</p>
+          </div>
+        </a>
+
+        <a class="card music" href="#">
+          <img src="../../assets/images/pic05.webp" alt="Brazilian music in art">
+          <div class="card-content">
+            <span class="pill">Brazilian culture</span>
+            <h2 class="title">Brazilian Music in Art</h2>
+            <p class="desc">See traditional performance portrayed in art and listen to clips</p>
+          </div>
+        </a>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

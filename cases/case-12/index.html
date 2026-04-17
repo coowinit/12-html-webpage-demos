@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Video Stories Slider</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/swiper@11/swiper-bundle.min.css"/>
+  <style>
+    :root{
+      --bg:#f4f4f2;
+      --text:#18324b;
+      --muted:#4e5d6b;
+      --line:#d6d8d4;
+      --container:1540px;
+      --radius:14px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+    body{
+      background:var(--bg);
+      color:var(--text);
+      font-family:"Inter",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+      overflow-x:hidden;
+    }
+
+    .page{
+      padding:28px 18px 34px;
+    }
+
+    .container{
+      width:100%;
+      max-width:var(--container);
+      margin:0 auto;
+    }
+
+    .section-head{
+      text-align:center;
+      margin-bottom:28px;
+    }
+
+    .title-row{
+      display:grid;
+      grid-template-columns:minmax(40px, 1fr) auto minmax(40px, 1fr);
+      align-items:center;
+      gap:28px;
+      margin-bottom:16px;
+    }
+
+    .title-line{
+      height:1px;
+      background:#8b8f92;
+      opacity:.9;
+      max-width:160px;
+      width:100%;
+      justify-self:center;
+    }
+
+    .section-title{
+      margin:0;
+      font-size:54px;
+      line-height:1.05;
+      font-weight:400;
+      letter-spacing:-0.05em;
+      color:#19324d;
+    }
+
+    .section-subtitle{
+      margin:0;
+      font-size:18px;
+      line-height:1.4;
+      color:#31475f;
+      font-weight:400;
+    }
+
+    .slider-shell{
+      position:relative;
+      padding:8px 48px 0 18px;
+    }
+
+    .stories-swiper{
+      overflow:visible;
+    }
+
+    .swiper-slide{
+      height:auto;
+    }
+
+    .story-card{
+      position:relative;
+      display:block;
+      aspect-ratio: 0.82 / 1.48;
+      border-radius:var(--radius);
+      overflow:hidden;
+      text-decoration:none;
+      color:#fff;
+      background:#d7d7d7;
+      box-shadow:0 0 0 1px rgba(0,0,0,.04) inset;
+      cursor:pointer;
+      transition:transform .28s ease, box-shadow .28s ease;
+    }
+
+    .story-card:hover{
+      transform:translateY(-4px);
+      box-shadow:0 14px 28px rgba(0,0,0,.10);
+    }
+
+    .story-image{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+      transition:transform .85s ease;
+    }
+
+    .story-card:hover .story-image{
+      transform:scale(1.05);
+    }
+
+    .story-card::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        linear-gradient(180deg, rgba(0,0,0,0.02) 0%, rgba(0,0,0,0.10) 42%, rgba(0,0,0,0.72) 100%);
+      z-index:1;
+      pointer-events:none;
+    }
+
+    .play-btn{
+      position:absolute;
+      left:50%;
+      top:52%;
+      transform:translate(-50%, -50%);
+      width:56px;
+      height:56px;
+      border-radius:999px;
+      background:rgba(255,255,255,.82);
+      border:none;
+      display:grid;
+      place-items:center;
+      z-index:2;
+      box-shadow:0 8px 22px rgba(0,0,0,.18);
+      transition:transform .22s ease, background-color .22s ease;
+      pointer-events:none;
+    }
+
+    .story-card:hover .play-btn{
+      transform:translate(-50%, -50%) scale(1.05);
+      background:#ffffff;
+    }
+
+    .play-icon{
+      width:0;
+      height:0;
+      border-top:11px solid transparent;
+      border-bottom:11px solid transparent;
+      border-left:16px solid rgba(35,45,52,.78);
+      margin-left:4px;
+    }
+
+    .story-content{
+      position:absolute;
+      left:18px;
+      right:18px;
+      bottom:14px;
+      z-index:2;
+    }
+
+    .story-text{
+      margin:0;
+      font-size:18px;
+      line-height:1.5;
+      font-weight:500;
+      color:#fff;
+      text-shadow:0 2px 10px rgba(0,0,0,.25);
+      display:-webkit-box;
+      -webkit-line-clamp:4;
+      -webkit-box-orient:vertical;
+      overflow:hidden;
+    }
+
+    .story-card:hover .story-text{
+      opacity:.98;
+    }
+
+    .nav-btn{
+      position:absolute;
+      top:50%;
+      transform:translateY(-50%);
+      width:50px;
+      height:50px;
+      border:none;
+      background:transparent;
+      color:#2f3134;
+      cursor:pointer;
+      display:grid;
+      place-items:center;
+      z-index:10;
+      transition:transform .22s ease, opacity .22s ease, color .22s ease;
+    }
+
+    .nav-btn:hover{
+      transform:translateY(-50%) scale(1.07);
+      color:#111;
+    }
+
+    .nav-btn.swiper-button-disabled{
+      opacity:.35;
+      cursor:default;
+    }
+
+    .nav-prev{ left:-6px; }
+    .nav-next{ right:-6px; }
+
+    .chevron{
+      width:22px;
+      height:22px;
+      border-top:4px solid currentColor;
+      border-right:4px solid currentColor;
+      display:block;
+    }
+
+    .chevron.prev{ transform:rotate(-135deg); }
+    .chevron.next{ transform:rotate(45deg); }
+
+    .swiper-scrollbar{
+      position:static !important;
+      width:220px !important;
+      max-width:100%;
+      height:3px !important;
+      background:rgba(0,0,0,.08);
+      border-radius:999px;
+      margin:24px auto 0;
+    }
+
+    .swiper-scrollbar-drag{
+      background:#25384b !important;
+      border-radius:999px;
+    }
+
+    .video-modal{
+      position:fixed;
+      inset:0;
+      background:rgba(10,14,18,.72);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+      z-index:200;
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .25s ease;
+    }
+
+    .video-modal.is-open{
+      opacity:1;
+      pointer-events:auto;
+    }
+
+    .video-dialog{
+      position:relative;
+      width:min(100%, 980px);
+      border-radius:16px;
+      background:#0c1117;
+      box-shadow:0 22px 70px rgba(0,0,0,.35);
+      overflow:hidden;
+      transform:translateY(12px) scale(.985);
+      transition:transform .25s ease;
+    }
+
+    .video-modal.is-open .video-dialog{
+      transform:translateY(0) scale(1);
+    }
+
+    .video-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      padding:14px 16px;
+      background:#111821;
+      color:#fff;
+    }
+
+    .video-title{
+      margin:0;
+      font-size:16px;
+      line-height:1.35;
+      font-weight:600;
+      color:#f6f7f8;
+    }
+
+    .close-btn{
+      width:40px;
+      height:40px;
+      border:none;
+      border-radius:999px;
+      background:rgba(255,255,255,.08);
+      color:#fff;
+      cursor:pointer;
+      display:grid;
+      place-items:center;
+      flex:0 0 auto;
+      transition:background-color .2s ease, transform .2s ease;
+    }
+
+    .close-btn:hover{
+      background:rgba(255,255,255,.15);
+      transform:scale(1.04);
+    }
+
+    .close-icon{
+      position:relative;
+      width:16px;
+      height:16px;
+    }
+
+    .close-icon::before,
+    .close-icon::after{
+      content:"";
+      position:absolute;
+      left:7px;
+      top:0;
+      width:2px;
+      height:16px;
+      background:currentColor;
+      border-radius:999px;
+    }
+
+    .close-icon::before{ transform:rotate(45deg); }
+    .close-icon::after{ transform:rotate(-45deg); }
+
+    .video-body{
+      background:#000;
+      aspect-ratio:16 / 9;
+    }
+
+    .video-player{
+      width:100%;
+      height:100%;
+      display:block;
+      background:#000;
+    }
+
+    @media (max-width: 1100px){
+      .section-title{
+        font-size:44px;
+      }
+
+      .slider-shell{
+        padding:8px 34px 0 12px;
+      }
+
+      .story-text{
+        font-size:16px;
+      }
+    }
+
+    @media (max-width: 640px){
+      .page{
+        padding:16px 12px 28px;
+      }
+
+      .title-row{
+        gap:14px;
+        margin-bottom:12px;
+      }
+
+      .title-line{
+        max-width:70px;
+      }
+
+      .section-title{
+        font-size:28px;
+        line-height:1.08;
+      }
+
+      .section-subtitle{
+        font-size:14px;
+        padding:0 12px;
+      }
+
+      .slider-shell{
+        padding:8px 2px 0;
+      }
+
+      .nav-btn{
+        display:none;
+      }
+
+      .story-content{
+        left:14px;
+        right:14px;
+        bottom:12px;
+      }
+
+      .story-text{
+        font-size:15px;
+        line-height:1.48;
+      }
+
+      .play-btn{
+        width:50px;
+        height:50px;
+      }
+
+      .play-icon{
+        border-top-width:10px;
+        border-bottom-width:10px;
+        border-left-width:14px;
+      }
+
+      .swiper-scrollbar{
+        width:140px !important;
+        margin-top:18px;
+      }
+
+      .video-modal{
+        padding:12px;
+      }
+
+      .video-dialog{
+        border-radius:14px;
+      }
+
+      .video-head{
+        padding:12px 12px 10px;
+      }
+
+      .video-title{
+        font-size:14px;
+      }
+
+      .close-btn{
+        width:36px;
+        height:36px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="container">
+      <header class="section-head">
+        <div class="title-row">
+          <span class="title-line"></span>
+          <h1 class="section-title">Wood Makes Us Look Good</h1>
+          <span class="title-line"></span>
+        </div>
+        <p class="section-subtitle">Explore these transformations from homeowners who decided to make the upgrade to Trex.</p>
+      </header>
+
+      <div class="slider-shell">
+        <button class="nav-btn nav-prev" type="button" aria-label="上一组视频">
+          <span class="chevron prev"></span>
+        </button>
+
+        <div class="swiper stories-swiper">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide">
+              <a class="story-card"
+                 href="#"
+                 data-title="Comment SHOP and I’ll send the links for this video to your DM."
+                 data-video="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4">
+                <img class="story-image" src="../../assets/images/pic01.webp" alt="Deck transformation story 01">
+                <span class="play-btn" aria-hidden="true"><span class="play-icon"></span></span>
+                <div class="story-content">
+                  <p class="story-text">Comment SHOP and I’ll send the links for this video to your DM. Must be following me or the message gets blocked I’m so…</p>
+                </div>
+              </a>
+            </div>
+
+            <div class="swiper-slide">
+              <a class="story-card"
+                 href="#"
+                 data-title="We believe a deck is more than just a deck."
+                 data-video="https://www.w3schools.com/html/mov_bbb.mp4">
+                <img class="story-image" src="../../assets/images/pic02.webp" alt="Deck transformation story 02">
+                <span class="play-btn" aria-hidden="true"><span class="play-icon"></span></span>
+                <div class="story-content">
+                  <p class="story-text">We believe a deck is more than just a deck is a place to be enjoyed with the people who matter most. Let us be your guid…</p>
+                </div>
+              </a>
+            </div>
+
+            <div class="swiper-slide">
+              <a class="story-card"
+                 href="#"
+                 data-title="Composite balcony, because… why not?"
+                 data-video="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4">
+                <img class="story-image" src="../../assets/images/pic03.webp" alt="Deck transformation story 03">
+                <span class="play-btn" aria-hidden="true"><span class="play-icon"></span></span>
+                <div class="story-content">
+                  <p class="story-text">Composite balcony, because…why not? 😉 we did bring strapping to flip the framing direction on this balcony, but the spacing of the…</p>
+                </div>
+              </a>
+            </div>
+
+            <div class="swiper-slide">
+              <a class="story-card"
+                 href="#"
+                 data-title="That Tiki Torch color matched this old deck perfectly."
+                 data-video="https://www.w3schools.com/html/movie.mp4">
+                <img class="story-image" src="../../assets/images/pic04.webp" alt="Deck transformation story 04">
+                <span class="play-btn" aria-hidden="true"><span class="play-icon"></span></span>
+                <div class="story-content">
+                  <p class="story-text">That trexcompany Tiki Torch color matched this old deck perfectly 👏🏼 #trex #crafted #fyp #deck #bluecollar</p>
+                </div>
+              </a>
+            </div>
+
+            <div class="swiper-slide">
+              <a class="story-card"
+                 href="#"
+                 data-title="A simple deck refresh can completely change the feel of your backyard."
+                 data-video="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4">
+                <img class="story-image" src="../../assets/images/pic05.webp" alt="Deck transformation story 05">
+                <span class="play-btn" aria-hidden="true"><span class="play-icon"></span></span>
+                <div class="story-content">
+                  <p class="story-text">A simple deck refresh can completely change the feel of your backyard and make the whole space feel warmer and more finished.</p>
+                </div>
+              </a>
+            </div>
+
+            <div class="swiper-slide">
+              <a class="story-card"
+                 href="#"
+                 data-title="Small outdoor spaces can still feel premium with the right decking finish."
+                 data-video="https://www.w3schools.com/html/mov_bbb.mp4">
+                <img class="story-image" src="../../assets/images/pic06.webp" alt="Deck transformation story 06">
+                <span class="play-btn" aria-hidden="true"><span class="play-icon"></span></span>
+                <div class="story-content">
+                  <p class="story-text">Small outdoor spaces can still feel premium with the right decking finish, framing, and trim details.</p>
+                </div>
+              </a>
+            </div>
+          </div>
+
+          <div class="swiper-scrollbar"></div>
+        </div>
+
+        <button class="nav-btn nav-next" type="button" aria-label="下一组视频">
+          <span class="chevron next"></span>
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <div class="video-modal" id="videoModal" aria-hidden="true">
+    <div class="video-dialog" role="dialog" aria-modal="true" aria-labelledby="videoModalTitle">
+      <div class="video-head">
+        <h2 class="video-title" id="videoModalTitle">Video Story</h2>
+        <button class="close-btn" type="button" id="closeModalBtn" aria-label="关闭视频">
+          <span class="close-icon"></span>
+        </button>
+      </div>
+      <div class="video-body">
+        <video id="storyVideo" class="video-player" playsinline controls preload="metadata"></video>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/swiper@11/swiper-bundle.min.js"></script>
+  <script>
+    const swiper = new Swiper('.stories-swiper', {
+      slidesPerView: 1.18,
+      spaceBetween: 18,
+      speed: 650,
+      grabCursor: true,
+      watchOverflow: true,
+      navigation: {
+        nextEl: '.nav-next',
+        prevEl: '.nav-prev'
+      },
+      scrollbar: {
+        el: '.swiper-scrollbar',
+        draggable: true
+      },
+      breakpoints: {
+        640: {
+          slidesPerView: 2,
+          spaceBetween: 18
+        },
+        960: {
+          slidesPerView: 3,
+          spaceBetween: 22
+        },
+        1280: {
+          slidesPerView: 4,
+          spaceBetween: 22
+        }
+      }
+    });
+
+    const modal = document.getElementById('videoModal');
+    const modalTitle = document.getElementById('videoModalTitle');
+    const storyVideo = document.getElementById('storyVideo');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+
+    function openVideo(title, src) {
+      modal.classList.add('is-open');
+      modal.setAttribute('aria-hidden', 'false');
+      modalTitle.textContent = title;
+      storyVideo.src = src;
+      storyVideo.currentTime = 0;
+      const playPromise = storyVideo.play();
+      if (playPromise && typeof playPromise.catch === 'function') {
+        playPromise.catch(() => {});
+      }
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeVideo() {
+      modal.classList.remove('is-open');
+      modal.setAttribute('aria-hidden', 'true');
+      storyVideo.pause();
+      storyVideo.removeAttribute('src');
+      storyVideo.load();
+      document.body.style.overflow = '';
+    }
+
+    document.querySelectorAll('.story-card').forEach(card => {
+      card.addEventListener('click', (event) => {
+        event.preventDefault();
+        openVideo(card.dataset.title, card.dataset.video);
+      });
+    });
+
+    closeModalBtn.addEventListener('click', closeVideo);
+
+    modal.addEventListener('click', (event) => {
+      if (event.target === modal) closeVideo();
+    });
+
+    window.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && modal.classList.contains('is-open')) {
+        closeVideo();
+      }
+    });
+  </script>
+</body>
+</html>

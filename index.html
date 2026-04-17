@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>12 HTML Webpage Demos</title>
+  <meta
+    name="description"
+    content="A curated collection of 12 responsive HTML webpage demos built with HTML, CSS and JavaScript. Ready for GitHub Pages preview."
+  />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="./assets/css/global.css?v=1.0.1" />
+</head>
+<body>
+  <div class="page-shell" id="top">
+    <header class="site-header">
+      <div class="container nav">
+        <a class="brand" href="./index.html" aria-label="12 HTML Webpage Demos home">
+          <span class="brand-mark">12</span>
+          <span class="brand-text">HTML Webpage Demos</span>
+        </a>
+
+        <nav class="nav-links" aria-label="Primary">
+          <a href="#overview">Overview</a>
+          <a href="#gallery">Demos</a>
+          <a href="#guide">Guide</a>
+          <a href="./README.md">README</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero" id="overview">
+        <div class="container hero-grid">
+          <div class="hero-copy">
+            <span class="eyebrow">Responsive • GitHub Pages • HTML / CSS / JavaScript</span>
+            <h1>12 polished webpage demos in one clean showcase.</h1>
+            <p class="hero-text">
+              This repository collects 12 responsive frontend demos, including grids, sliders, product detail pages,
+              before/after comparison sections, modal video galleries, and interaction-driven landing page components.
+            </p>
+
+            <div class="hero-actions">
+              <a class="btn btn-primary" href="#gallery">Browse demos</a>
+              <a class="btn btn-secondary" href="./README.md">Open README</a>
+            </div>
+
+            <div class="hero-stats" aria-label="Project stats">
+              <div class="stat-card">
+                <strong>12</strong>
+                <span>Live demos</span>
+              </div>
+              <div class="stat-card">
+                <strong>Responsive</strong>
+                <span>Desktop and mobile ready</span>
+              </div>
+              <div class="stat-card">
+                <strong>Swiper + Bootstrap</strong>
+                <span>Mixed UI patterns</span>
+              </div>
+            </div>
+
+            <div class="hero-tags" aria-label="Stack tags">
+              <span>HTML</span>
+              <span>CSS</span>
+              <span>JavaScript</span>
+              <span>Swiper</span>
+              <span>Bootstrap</span>
+              <span>GitHub Pages</span>
+            </div>
+          </div>
+
+          <aside class="hero-panel" aria-label="Featured demos">
+            <div class="feature-stack">
+              <article class="feature-card">
+                <img src="./assets/images/cover-08.png" alt="Product detail gallery preview" />
+                <div>
+                  <p>Featured</p>
+                  <h2>Product Detail Gallery</h2>
+                  <span>Color switch • thumbnails • quantity stepper</span>
+                </div>
+              </article>
+
+              <article class="feature-card">
+                <img src="./assets/images/cover-11.png" alt="Before and after comparison preview" />
+                <div>
+                  <p>Interactive</p>
+                  <h2>Before / After Comparison</h2>
+                  <span>Drag slider • responsive split-view</span>
+                </div>
+              </article>
+
+              <article class="feature-card">
+                <img src="./assets/images/cover-12.png" alt="Video stories slider preview" />
+                <div>
+                  <p>Media</p>
+                  <h2>Video Stories Slider</h2>
+                  <span>Swiper • modal video • autoplay</span>
+                </div>
+              </article>
+
+              <article class="feature-card">
+                <img src="./assets/images/cover-04.png" alt="Course Carousel" />
+                <div>
+                  <p>Media</p>
+                  <h2>Course Carousel</h2>
+                  <span>Swiper • Tabs • Carousel</span>
+                </div>
+              </article>
+
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="controls-section">
+        <div class="container controls">
+          <div class="search-wrap">
+            <label class="sr-only" for="searchInput">Search demos</label>
+            <input id="searchInput" type="search" placeholder="Search by title, keyword, or tag" />
+          </div>
+
+          <div class="filter-group" role="tablist" aria-label="Filter demos">
+            <button class="filter-btn is-active" type="button" data-filter="all">All</button>
+            <button class="filter-btn" type="button" data-filter="grid">Grid</button>
+            <button class="filter-btn" type="button" data-filter="slider">Slider</button>
+            <button class="filter-btn" type="button" data-filter="interactive">Interactive</button>
+            <button class="filter-btn" type="button" data-filter="bootstrap">Bootstrap</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="gallery-section" id="gallery">
+        <div class="container">
+          <div class="section-heading">
+            <div>
+              <span class="section-kicker">Gallery</span>
+              <h2>Demo showcase</h2>
+            </div>
+            <p>
+              Open any demo directly, or use the preview button to inspect the cover image in a larger modal view.
+            </p>
+          </div>
+
+          <div id="galleryGrid" class="gallery-grid" aria-live="polite"></div>
+
+          <div id="emptyState" class="empty-state" hidden>
+            <h3>No matching demos found</h3>
+            <p>Try another keyword or switch the current filter.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="guide-section" id="guide">
+        <div class="container">
+          <div class="section-heading section-heading--compact">
+            <div>
+              <span class="section-kicker">Guide</span>
+              <h2>Use this repo on GitHub</h2>
+            </div>
+            <p>
+              The homepage is ready to act as a portfolio-style gallery, and each case already has its own standalone
+              entry file under the <code>cases/</code> directory.
+            </p>
+          </div>
+
+          <div class="guide-grid">
+            <article class="guide-card">
+              <span class="guide-step">01</span>
+              <h3>Preview locally</h3>
+              <p>
+                Open the root <code>index.html</code> with Live Server or any static server to browse all 12 demos from
+                a single homepage.
+              </p>
+            </article>
+
+            <article class="guide-card">
+              <span class="guide-step">02</span>
+              <h3>Deploy with GitHub Pages</h3>
+              <p>
+                Push the repository to GitHub, enable Pages from the <code>main</code> branch, and use the root folder
+                as the publishing source.
+              </p>
+            </article>
+
+            <article class="guide-card">
+              <span class="guide-step">03</span>
+              <h3>Keep extending</h3>
+              <p>
+                Update the data in <code>assets/js/main.js</code>, replace screenshots, refine descriptions, or add new
+                categories as your collection grows.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <p>12 HTML Webpage Demos — responsive showcase for GitHub Pages.</p>
+        <a href="#top">Back to top</a>
+      </div>
+    </footer>
+  </div>
+
+  <dialog id="previewDialog" class="preview-dialog" aria-labelledby="previewTitle">
+    <div class="dialog-card">
+      <button id="closeDialogBtn" class="dialog-close" type="button" aria-label="Close preview">×</button>
+
+      <div class="dialog-copy">
+        <span id="previewBadge" class="dialog-badge">Preview</span>
+        <h3 id="previewTitle">Demo preview</h3>
+        <p id="previewText">Cover image preview.</p>
+      </div>
+
+      <div class="dialog-image-wrap">
+        <img id="previewImage" src="" alt="" />
+      </div>
+    </div>
+  </dialog>
+
+  <template id="cardTemplate">
+    <article class="demo-card">
+      <button class="card-image-wrap js-open-preview" type="button" aria-label="Open preview image">
+        <img class="card-image" src="" alt="" loading="lazy" />
+      </button>
+
+      <div class="card-body">
+        <div class="card-top">
+          <span class="status-badge"></span>
+          <span class="case-path"></span>
+        </div>
+
+        <h3 class="card-title"></h3>
+        <p class="card-desc"></p>
+
+        <div class="card-tags"></div>
+
+        <div class="card-actions">
+          <button class="btn btn-secondary js-open-preview" type="button">Preview cover</button>
+          <a class="btn btn-primary js-open-demo" href="#" target="_self">Open demo</a>
+        </div>
+      </div>
+    </article>
+  </template>
+
+  <script src="./assets/js/main.js"></script>
+</body>
+</html>

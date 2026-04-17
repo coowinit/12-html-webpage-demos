@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Product Detail Gallery</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#f5f5f3;
+      --panel:#dadada;
+      --text:#262626;
+      --muted:#6b7280;
+      --line:#d6d6d2;
+      --line-dark:#1c1c1c;
+      --button:#161616;
+    }
+
+    *{box-sizing:border-box}
+    html,body{
+      margin:0;
+      padding:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family:"Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+      "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    }
+
+    body{
+      min-height:100vh;
+    }
+
+    .page{
+      padding:34px 22px 28px;
+    }
+
+    .container{
+      width:100%;
+      max-width:1320px;
+      margin:0 auto;
+    }
+
+    .product-layout{
+      display:grid;
+      grid-template-columns:minmax(0, 840px) minmax(300px, 360px);
+      gap:64px;
+      align-items:start;
+    }
+
+    .gallery-shell{
+      display:flex;
+      align-items:flex-start;
+      gap:28px;
+      min-width:0;
+    }
+
+    .thumbs{
+      width:86px;
+      flex:0 0 86px;
+      display:flex;
+      flex-direction:column;
+      gap:18px;
+      padding-top:0;
+    }
+
+    .thumb-btn{
+      width:56px;
+      height:56px;
+      margin:0 auto;
+      border:1px solid transparent;
+      background:transparent;
+      padding:0;
+      cursor:pointer;
+      transition:transform .22s ease, border-color .22s ease, box-shadow .22s ease;
+      display:grid;
+      place-items:center;
+    }
+
+    .thumb-btn:hover{
+      transform:translateY(-1px);
+    }
+
+    .thumb-btn.is-active{
+      border-color:#1b1b1b;
+    }
+
+    .thumb-image-wrap{
+      width:40px;
+      height:40px;
+      overflow:hidden;
+      display:grid;
+      place-items:center;
+      background:transparent;
+    }
+
+    .thumb-image{
+      width:100%;
+      height:100%;
+      object-fit:contain;
+      display:block;
+    }
+
+    .main-stage{
+      position:relative;
+      flex:1 1 auto;
+      width:100%;
+      min-width:0;
+      aspect-ratio:1 / 1;
+      background:#d9d9d9;
+      overflow:hidden;
+      display:block;
+    }
+
+    .main-image{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      object-fit:contain;
+      display:block;
+      will-change:transform, opacity;
+    }
+
+    .main-image.is-entering{
+      animation:slideInFromLeft .5s cubic-bezier(.22,.61,.36,1) forwards;
+    }
+
+    .main-image.is-leaving{
+      animation:slideOutToRight .5s cubic-bezier(.22,.61,.36,1) forwards;
+      pointer-events:none;
+    }
+
+    @keyframes slideInFromLeft{
+      from{
+        opacity:0;
+        transform:translateX(-9%);
+      }
+      to{
+        opacity:1;
+        transform:translateX(0);
+      }
+    }
+
+    @keyframes slideOutToRight{
+      from{
+        opacity:1;
+        transform:translateX(0);
+      }
+      to{
+        opacity:0;
+        transform:translateX(8%);
+      }
+    }
+
+    .product-info{
+      padding-top:0;
+    }
+
+    .product-title{
+      margin:0 0 10px;
+      font-size:24px;
+      line-height:1.25;
+      font-weight:500;
+      letter-spacing:-0.02em;
+      color:#303030;
+    }
+
+    .price{
+      margin:0 0 28px;
+      color:#7c7c7c;
+      font-size:18px;
+      font-weight:500;
+    }
+
+    .divider{
+      height:1px;
+      background:var(--line);
+      margin:0 0 26px;
+    }
+
+    .description{
+      margin:0 0 26px;
+      color:#333;
+      font-size:16px;
+      line-height:1.55;
+    }
+
+    .option-label{
+      margin:0 0 12px;
+      font-size:16px;
+      font-weight:500;
+      color:#2c2c2c;
+    }
+
+    .swatches{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin-bottom:24px;
+    }
+
+    .swatch{
+      width:34px;
+      height:34px;
+      border-radius:999px;
+      border:1px solid #cdcdcd;
+      padding:3px;
+      background:transparent;
+      cursor:pointer;
+      transition:transform .2s ease, border-color .2s ease;
+    }
+
+    .swatch:hover{
+      transform:translateY(-1px);
+    }
+
+    .swatch.is-active{
+      border-color:#1a1a1a;
+    }
+
+    .swatch-core{
+      width:100%;
+      height:100%;
+      border-radius:999px;
+      display:block;
+      border:1px solid rgba(0,0,0,.08);
+    }
+
+    .swatch[data-color="black"] .swatch-core{
+      background:#000;
+    }
+
+    .swatch[data-color="white"] .swatch-core{
+      background:#f1f1f1;
+    }
+
+    .qty-wrap{
+      margin-bottom:34px;
+    }
+
+    .qty-control{
+      display:inline-flex;
+      align-items:center;
+      border:1px solid var(--line);
+      height:46px;
+      background:#f8f8f7;
+    }
+
+    .qty-btn{
+      width:46px;
+      height:44px;
+      border:none;
+      background:transparent;
+      font-size:28px;
+      font-weight:300;
+      color:#707070;
+      cursor:pointer;
+      transition:background-color .2s ease, color .2s ease;
+    }
+
+    .qty-btn:hover{
+      background:rgba(0,0,0,.03);
+      color:#202020;
+    }
+
+    .qty-input{
+      width:60px;
+      height:44px;
+      border:none;
+      border-left:1px solid transparent;
+      border-right:1px solid transparent;
+      background:transparent;
+      text-align:center;
+      font-size:24px;
+      font-weight:400;
+      color:#272727;
+      outline:none;
+    }
+
+    .cta{
+      width:100%;
+      max-width:356px;
+      height:46px;
+      border:none;
+      background:linear-gradient(90deg, #161616 0%, #1d1d1d 100%);
+      color:#fff;
+      font-size:18px;
+      font-weight:500;
+      cursor:pointer;
+      transition:transform .22s ease, filter .22s ease, box-shadow .22s ease;
+    }
+
+    .cta:hover{
+      transform:translateY(-1px);
+      filter:brightness(1.03);
+      box-shadow:0 10px 22px rgba(0,0,0,.12);
+    }
+
+    .product-info-inner{
+      max-width:356px;
+    }
+
+    @media (max-width: 1080px){
+      .product-layout{
+        grid-template-columns:1fr;
+        gap:34px;
+      }
+
+      .product-info-inner{
+        max-width:none;
+      }
+
+      .cta{
+        max-width:none;
+      }
+    }
+
+    @media (max-width: 680px){
+      .page{
+        padding:18px 14px 24px;
+      }
+
+      .gallery-shell{
+        flex-direction:column-reverse;
+        gap:16px;
+      }
+
+      .thumbs{
+        width:100%;
+        flex:none;
+        flex-direction:row;
+        gap:12px;
+        overflow-x:auto;
+        padding:4px 8px 2px 2px;
+        scroll-padding-inline:14px;
+        scrollbar-width:none;
+      }
+
+      .thumbs::-webkit-scrollbar{
+        display:none;
+      }
+
+      .thumb-btn{
+        width:56px;
+        height:56px;
+        flex:0 0 56px;
+        margin:0;
+      }
+
+      .main-stage{
+        min-height:320px;
+      }
+
+      .product-title{
+        font-size:28px;
+      }
+
+      .price{
+        margin-bottom:22px;
+      }
+
+      .description{
+        font-size:15px;
+      }
+
+      .qty-wrap{
+        margin-bottom:24px;
+      }
+
+      .cta{
+        height:48px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <div class="container">
+      <section class="product-layout">
+        <div class="gallery-shell">
+          <div class="thumbs" id="thumbs" aria-label="产品缩略图"></div>
+
+          <div class="main-stage" id="mainStage" aria-live="polite">
+            <img id="mainImage" class="main-image" alt="X The Everything Mug">
+          </div>
+        </div>
+
+        <div class="product-info">
+          <div class="product-info-inner">
+            <h1 class="product-title">X The Everything Mug</h1>
+            <p class="price">¥5,900</p>
+            <div class="divider"></div>
+
+            <p class="description">
+              The Everything Mug is a premium, 10 oz thermal-insulated travel mug built for everyday use at home,
+              in the office, or on the go. It is crafted from durable powder-coated stainless steel and finished
+              with an engraved X logo for a clean, elevated look. The mug comes with an anti-slip silicone foot and
+              the lid features a splash-resistant X branded slider.
+            </p>
+
+            <p class="option-label" id="colorLabel">Color: Black</p>
+            <div class="swatches" aria-label="选择颜色">
+              <button class="swatch is-active" type="button" data-color="black" aria-label="Black" aria-pressed="true">
+                <span class="swatch-core"></span>
+              </button>
+              <button class="swatch" type="button" data-color="white" aria-label="White" aria-pressed="false">
+                <span class="swatch-core"></span>
+              </button>
+            </div>
+
+            <div class="qty-wrap">
+              <div class="qty-control" aria-label="数量选择">
+                <button class="qty-btn" type="button" id="decreaseQty" aria-label="减少数量">−</button>
+                <input class="qty-input" id="qtyInput" type="text" value="1" inputmode="numeric" readonly aria-label="数量">
+                <button class="qty-btn" type="button" id="increaseQty" aria-label="增加数量">+</button>
+              </div>
+            </div>
+
+            <button class="cta" type="button">Add To Cart</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    const productState = {
+      color: 'black',
+      index: 0,
+      qty: 1
+    };
+
+    const variantOrder = [
+      { key: 'hero', label: 'Hero' },
+      { key: 'front', label: 'Front' },
+      { key: 'angle', label: 'Angle' },
+      { key: 'side', label: 'Side' },
+      { key: 'pair', label: 'Pair' },
+      { key: 'top', label: 'Top' },
+      { key: 'close', label: 'Close' }
+    ];
+
+    const mainStage = document.getElementById('mainStage');
+    const mainImage = document.getElementById('mainImage');
+    const thumbs = document.getElementById('thumbs');
+    const swatches = Array.from(document.querySelectorAll('.swatch'));
+    const colorLabel = document.getElementById('colorLabel');
+    const qtyInput = document.getElementById('qtyInput');
+    const decreaseQty = document.getElementById('decreaseQty');
+    const increaseQty = document.getElementById('increaseQty');
+
+    function svgToDataUri(svg) {
+      return 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg);
+    }
+
+    function buildMugSvg(theme, variant) {
+      const isBlack = theme === 'black';
+      const bodyStart = isBlack ? '#0f1116' : '#f9f9f9';
+      const bodyEnd = isBlack ? '#3e4149' : '#d7d7d7';
+      const handleStroke = isBlack ? '#26282d' : '#cfcfcf';
+      const logoColor = isBlack ? '#f4f4f4' : '#a9a9a9';
+      const lidColor = isBlack ? '#181a1f' : '#ececec';
+      const shadow = isBlack ? 'rgba(0,0,0,.22)' : 'rgba(0,0,0,.12)';
+      const bodyStroke = isBlack ? '#1d2025' : '#d0d0d0';
+
+      const configs = {
+        hero:  { mugX: 452, mugY: 470, scale: 1.16, rot: 0, handle: 'right', topView: false, pair: false, logo: true, handleScale: 1 },
+        front: { mugX: 452, mugY: 470, scale: 1.02, rot: 0, handle: 'right', topView: false, pair: false, logo: true, handleScale: 1 },
+        angle: { mugX: 455, mugY: 470, scale: 1.02, rot: -3, handle: 'right', topView: false, pair: false, logo: true, handleScale: 1.08 },
+        side:  { mugX: 452, mugY: 470, scale: 0.98, rot: 4, handle: 'right', topView: false, pair: false, logo: false, handleScale: 1.22 },
+        pair:  { mugX: 448, mugY: 472, scale: 0.95, rot: 0, handle: 'right', topView: false, pair: true, logo: true, handleScale: 1 },
+        top:   { mugX: 450, mugY: 470, scale: 1.05, rot: 0, handle: 'right', topView: true, pair: false, logo: false, handleScale: 1 },
+        close: { mugX: 452, mugY: 470, scale: 1.1, rot: 0, handle: 'right', topView: false, pair: false, logo: true, handleScale: 1 }
+      };
+
+      const cfg = configs[variant];
+      const mug = makeMug(cfg.mugX, cfg.mugY, cfg.scale, cfg.rot, cfg.handle, cfg.handleScale, cfg.logo, cfg.topView);
+      const secondMug = cfg.pair ? makeMug(590, 500, 0.68, 8, 'left', 0.92, false, false) : '';
+      const floorShadow = cfg.topView
+        ? `<ellipse cx="450" cy="598" rx="160" ry="18" fill="${shadow}"></ellipse>`
+        : `<ellipse cx="450" cy="680" rx="${cfg.pair ? 190 : 155}" ry="22" fill="${shadow}"></ellipse>`;
+
+      return svgToDataUri(`
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 900" width="900" height="900">
+          <defs>
+            <linearGradient id="bgGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#d9d9d9"/>
+              <stop offset="100%" stop-color="#d9d9d9"/>
+            </linearGradient>
+            <linearGradient id="bodyGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="${bodyStart}"/>
+              <stop offset="45%" stop-color="${isBlack ? '#16181d' : '#f3f3f3'}"/>
+              <stop offset="100%" stop-color="${bodyEnd}"/>
+            </linearGradient>
+            <linearGradient id="shineGrad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="rgba(255,255,255,.35)"/>
+              <stop offset="55%" stop-color="rgba(255,255,255,.03)"/>
+              <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+            </linearGradient>
+            <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="6" stdDeviation="12" flood-color="rgba(0,0,0,.18)"/>
+            </filter>
+          </defs>
+          <rect width="900" height="900" fill="url(#bgGrad)"/>
+          ${floorShadow}
+          ${secondMug}
+          ${mug}
+        </svg>
+      `);
+
+      function makeMug(cx, cy, scale, rotate, handleSide, handleScale, showLogo, topView) {
+        const handleX = handleSide === 'right' ? 118 : -118;
+        const handleScaleX = handleSide === 'right' ? 1 : -1;
+
+        if (topView) {
+          return `
+            <g transform="translate(${cx} ${cy}) scale(${scale}) rotate(${rotate})" filter="url(#softShadow)">
+              <ellipse cx="0" cy="0" rx="138" ry="48" fill="${lidColor}" stroke="${bodyStroke}" stroke-width="4"/>
+              <ellipse cx="0" cy="0" rx="112" ry="32" fill="rgba(0,0,0,.08)"/>
+              <rect x="-14" y="-12" width="28" height="16" rx="6" fill="${isBlack ? '#2b2d34' : '#d8d8d8'}"/>
+              <circle cx="0" cy="-4" r="7" fill="${isBlack ? '#0d0f14' : '#cfcfcf'}"/>
+              <g transform="translate(${handleX} 8) scale(${handleScaleX * handleScale} ${handleScale})">
+                <path d="M0,-36 C44,-34 62,-12 62,22 C62,56 44,78 0,80" fill="none" stroke="${handleStroke}" stroke-width="16" stroke-linecap="round"/>
+              </g>
+            </g>
+          `;
+        }
+
+        return `
+          <g transform="translate(${cx} ${cy}) scale(${scale}) rotate(${rotate})" filter="url(#softShadow)">
+            <g transform="translate(0 10)">
+              <rect x="-118" y="-172" width="236" height="364" rx="44" fill="url(#bodyGrad)" stroke="${bodyStroke}" stroke-width="3"/>
+              <ellipse cx="0" cy="-166" rx="110" ry="18" fill="${lidColor}" stroke="${bodyStroke}" stroke-width="3"/>
+              <rect x="-108" y="-188" width="216" height="28" rx="14" fill="${lidColor}" stroke="${bodyStroke}" stroke-width="3"/>
+              <ellipse cx="0" cy="192" rx="98" ry="12" fill="rgba(255,255,255,.12)"/>
+              <path d="M-82,-136 C-50,-148 -22,-148 -4,-138" fill="none" stroke="rgba(255,255,255,.18)" stroke-width="6" stroke-linecap="round"/>
+              <rect x="-90" y="-158" width="52" height="314" rx="24" fill="rgba(255,255,255,.08)"/>
+              <g transform="translate(${handleX} 8) scale(${handleScaleX * handleScale} ${handleScale})">
+                <path d="M0,-94 C78,-92 112,-52 112,8 C112,68 76,108 0,110" fill="none" stroke="${handleStroke}" stroke-width="20" stroke-linecap="round"/>
+                <path d="M8,-74 C56,-72 78,-42 78,8 C78,58 56,88 8,90" fill="none" stroke="rgba(255,255,255,.18)" stroke-width="6" stroke-linecap="round"/>
+              </g>
+              ${showLogo ? `
+                <g transform="translate(-2 12) scale(1.02)">
+                  <path d="M-38,-60 L10,8 L50,64" stroke="${logoColor}" stroke-width="10" fill="none" stroke-linecap="square"/>
+                  <path d="M50,-60 L10,8 L-38,64" stroke="${logoColor}" stroke-width="10" fill="none" stroke-linecap="square"/>
+                </g>
+              ` : ``}
+            </g>
+          </g>
+        `;
+      }
+    }
+
+    function getImageSet(color) {
+      return variantOrder.map(item => ({
+        key: item.key,
+        label: item.label,
+        src: buildMugSvg(color, item.key),
+        alt: `${color === 'black' ? 'Black' : 'White'} mug ${item.label.toLowerCase()} view`
+      }));
+    }
+
+    function currentImages() {
+      return getImageSet(productState.color);
+    }
+
+    function renderThumbnails() {
+      const images = currentImages();
+      thumbs.innerHTML = images.map((item, index) => `
+        <button
+          class="thumb-btn ${index === productState.index ? 'is-active' : ''}"
+          type="button"
+          data-index="${index}"
+          aria-label="${item.label}"
+          aria-pressed="${index === productState.index ? 'true' : 'false'}"
+        >
+          <span class="thumb-image-wrap">
+            <img class="thumb-image" src="${item.src}" alt="${item.alt}">
+          </span>
+        </button>
+      `).join('');
+
+      thumbs.querySelectorAll('.thumb-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const newIndex = Number(btn.dataset.index);
+          if (newIndex === productState.index) return;
+          productState.index = newIndex;
+          updateThumbState();
+          scrollActiveThumbIntoView();
+          transitionMainImage(images[newIndex].src, images[newIndex].alt);
+        });
+      });
+    }
+
+    function updateThumbState() {
+      thumbs.querySelectorAll('.thumb-btn').forEach((btn, idx) => {
+        const active = idx === productState.index;
+        btn.classList.toggle('is-active', active);
+        btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+      });
+    }
+
+    function scrollActiveThumbIntoView() {
+      if (window.innerWidth > 680) return;
+      const activeBtn = thumbs.querySelector('.thumb-btn.is-active');
+      if (!activeBtn) return;
+
+      const containerWidth = thumbs.clientWidth;
+      const thumbCenter = activeBtn.offsetLeft + activeBtn.offsetWidth / 2;
+
+      // Keep the active thumb slightly left of center when possible,
+      // so the next thumbnail remains visible on the right.
+      const preferredLeft = thumbCenter - containerWidth * 0.38;
+      const maxScroll = thumbs.scrollWidth - containerWidth;
+      const nextLeft = Math.max(0, Math.min(preferredLeft, maxScroll));
+
+      thumbs.scrollTo({
+        left: nextLeft,
+        behavior: 'smooth'
+      });
+    }
+
+    function transitionMainImage(newSrc, altText) {
+      const oldImage = mainStage.querySelector('.main-image.current');
+      const incoming = document.createElement('img');
+      incoming.className = 'main-image is-entering current';
+      incoming.src = newSrc;
+      incoming.alt = altText;
+
+      if (!oldImage) {
+        incoming.classList.remove('is-entering');
+        mainStage.innerHTML = '';
+        mainStage.appendChild(incoming);
+        return;
+      }
+
+      const outgoing = oldImage.cloneNode(true);
+      outgoing.className = 'main-image is-leaving';
+      mainStage.innerHTML = '';
+      mainStage.appendChild(outgoing);
+      mainStage.appendChild(incoming);
+
+      incoming.addEventListener('animationend', () => {
+        incoming.classList.remove('is-entering');
+      }, { once: true });
+
+      outgoing.addEventListener('animationend', () => {
+        outgoing.remove();
+      }, { once: true });
+    }
+
+    function applyColor(color) {
+      productState.color = color;
+      productState.index = 0;
+      colorLabel.textContent = `Color: ${color === 'black' ? 'Black' : 'White'}`;
+
+      swatches.forEach(btn => {
+        const active = btn.dataset.color === color;
+        btn.classList.toggle('is-active', active);
+        btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+      });
+
+      const images = currentImages();
+      renderThumbnails();
+      scrollActiveThumbIntoView();
+      transitionMainImage(images[0].src, images[0].alt);
+    }
+
+    function updateQty(delta) {
+      productState.qty = Math.max(1, Math.min(99, productState.qty + delta));
+      qtyInput.value = productState.qty;
+    }
+
+    swatches.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const nextColor = btn.dataset.color;
+        if (nextColor === productState.color) return;
+        applyColor(nextColor);
+      });
+    });
+
+    decreaseQty.addEventListener('click', () => updateQty(-1));
+    increaseQty.addEventListener('click', () => updateQty(1));
+
+    (function init() {
+      const images = currentImages();
+      mainStage.innerHTML = '';
+      const initialImage = document.createElement('img');
+      initialImage.className = 'main-image current';
+      initialImage.src = images[0].src;
+      initialImage.alt = images[0].alt;
+      mainStage.appendChild(initialImage);
+      renderThumbnails();
+      scrollActiveThumbIntoView();
+      qtyInput.value = productState.qty;
+    })();
+
+    window.addEventListener('resize', scrollActiveThumbIntoView);
+  </script>
+</body>
+</html>

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Integrations Grid Responsive</title>
+  <style>
+    :root{
+      --bg:#f4f2f1;
+      --text:#111111;
+      --muted:#2e2e2e;
+      --card-gap-x:72px;
+      --card-gap-y:56px;
+      --radius:18px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+    body{
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+      "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+
+    .page{
+      min-height:100vh;
+      padding:54px 36px 56px;
+    }
+
+    .container{
+      max-width:1180px;
+      margin:0 auto;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(4, minmax(0,1fr));
+      column-gap:var(--card-gap-x);
+      row-gap:var(--card-gap-y);
+      align-items:start;
+    }
+
+    .card{
+      text-decoration:none;
+      color:inherit;
+      display:block;
+      padding:0;
+      border-radius:var(--radius);
+      transition:transform .28s ease, opacity .28s ease;
+    }
+
+    .card:hover{
+      transform:translateY(-4px);
+    }
+
+    .logo-wrap{
+      width:56px;
+      height:56px;
+      border-radius:16px;
+      overflow:hidden;
+      margin-bottom:20px;
+      transition:transform .45s ease, box-shadow .35s ease;
+    }
+
+    .card:hover .logo-wrap{
+      transform:scale(1.06);
+      box-shadow:0 12px 24px rgba(0,0,0,.08);
+    }
+
+    .logo{
+      width:100%;
+      height:100%;
+      display:block;
+      object-fit:cover;
+    }
+
+    .title{
+      margin:0 0 12px;
+      font-size:22px;
+      line-height:1.25;
+      font-weight:700;
+      letter-spacing:-0.02em;
+    }
+
+    .desc{
+      margin:0;
+      font-size:17px;
+      line-height:1.5;
+      color:var(--muted);
+      max-width:260px;
+    }
+
+    @media (max-width: 1100px){
+      .grid{
+        grid-template-columns:repeat(2, minmax(0,1fr));
+        column-gap:40px;
+        row-gap:40px;
+      }
+      .desc{
+        max-width:none;
+      }
+    }
+
+    @media (max-width: 640px){
+      .page{
+        padding:26px 18px 36px;
+      }
+      .grid{
+        grid-template-columns:1fr;
+        gap:28px;
+      }
+      .card{
+        padding:18px;
+        background:rgba(255,255,255,.55);
+      }
+      .logo-wrap{
+        width:52px;
+        height:52px;
+        margin-bottom:16px;
+      }
+      .title{
+        font-size:18px;
+        margin-bottom:10px;
+      }
+      .desc{
+        font-size:15px;
+        line-height:1.6;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="container">
+      <div class="grid">
+        <a class="card" href="#" aria-label="Zoom">
+          <div class="logo-wrap">
+            <img class="logo" src="../../assets/images/logo01.png" alt="Zoom placeholder">
+          </div>
+          <h2 class="title">Zoom</h2>
+          <p class="desc">Connect and collaborate on all your content, in real time, no matter where your teams may be.</p>
+        </a>
+
+        <a class="card" href="#" aria-label="Slack">
+          <div class="logo-wrap">
+            <img class="logo" src="../../assets/images/logo02.png" alt="Slack placeholder">
+          </div>
+          <h2 class="title">Slack</h2>
+          <p class="desc">Integrate your conversations and Dropbox content to keep teams in sync.</p>
+        </a>
+
+        <a class="card" href="#" aria-label="Office 365">
+          <div class="logo-wrap">
+            <img class="logo" src="../../assets/images/logo03.png" alt="Office 365 placeholder">
+          </div>
+          <h2 class="title">Office 365</h2>
+          <p class="desc">Easily access, edit, and share Office docs online in Dropbox.</p>
+        </a>
+
+        <a class="card" href="#" aria-label="Google Workspace">
+          <div class="logo-wrap">
+            <img class="logo" src="../../assets/images/logo04.png" alt="Google Workspace placeholder">
+          </div>
+          <h2 class="title">Google Workspace</h2>
+          <p class="desc">Create, edit, and share Google Docs, Sheets, and Slides from Dropbox.</p>
+        </a>
+
+        <a class="card" href="#" aria-label="Microsoft Teams">
+          <div class="logo-wrap">
+            <img class="logo" src="../../assets/images/logo05.png" alt="Microsoft Teams placeholder">
+          </div>
+          <h2 class="title">Microsoft Teams</h2>
+          <p class="desc">Share files directly from Dropbox to the work you’re doing in Microsoft Teams.</p>
+        </a>
+
+        <a class="card" href="#" aria-label="Canva">
+          <div class="logo-wrap">
+            <img class="logo" src="../../assets/images/logo06.png" alt="Canva placeholder">
+          </div>
+          <h2 class="title">Canva</h2>
+          <p class="desc">Create beautiful graphics in Canva with your content from Dropbox.</p>
+        </a>
+
+        <a class="card" href="#" aria-label="Asana">
+          <div class="logo-wrap">
+            <img class="logo" src="../../assets/images/logo07.png" alt="Asana placeholder">
+          </div>
+          <h2 class="title">Asana</h2>
+          <p class="desc">Teams can track any kind of work with Asana, while keeping content from Dropbox right alongside.</p>
+        </a>
+
+        <a class="card" href="#" aria-label="Miro">
+          <div class="logo-wrap">
+            <img class="logo" src="../../assets/images/logo08.png" alt="Miro placeholder">
+          </div>
+          <h2 class="title">Miro</h2>
+          <p class="desc">Map, discuss, and work together with your Dropbox files on an online collaborative whiteboard.</p>
+        </a>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

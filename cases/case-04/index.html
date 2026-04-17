@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Course Carousel - Swiper Fixed</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+4:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/swiper@11/swiper-bundle.min.css" />
+  <style>
+    :root{
+      --bg:#f3f2f1;
+      --text:#151515;
+      --muted:#4b4b4b;
+      --border:#d8d8d8;
+      --card:#ffffff;
+      --button:#dbe8e8;
+      --shadow:0 4px 10px rgba(0,0,0,.08), 0 12px 24px rgba(0,0,0,.05);
+      --container:1200px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{
+      margin:0;
+      padding:0;
+      overflow-x:hidden;
+    }
+
+    body{
+      font-family:"Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+
+    .page{
+      padding:28px 20px 56px;
+      min-height:100vh;
+      overflow-x:hidden;
+    }
+
+    .container{
+      width:100%;
+      max-width:var(--container);
+      margin:0 auto;
+    }
+
+    .tabs{
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      flex-wrap:wrap;
+      gap:20px 40px;
+      margin:0 0 34px;
+      padding:0;
+    }
+
+    .tab{
+      border:none;
+      background:transparent;
+      font:inherit;
+      color:#2a2a2a;
+      font-size:20px;
+      line-height:1.2;
+      font-weight:700;
+      letter-spacing:.01em;
+      padding:0 0 8px;
+      cursor:pointer;
+      border-bottom:4px solid transparent;
+      transition:opacity .25s ease, transform .25s ease, border-color .25s ease;
+    }
+
+    .tab:hover{
+      opacity:.82;
+      transform:translateY(-1px);
+    }
+
+    .tab.is-active{
+      border-bottom-color:#343434;
+    }
+
+    .carousel-shell{
+      position:relative;
+      width:100%;
+      padding:20px 54px 12px;
+    }
+
+    .swiper{
+      width:100%;
+      overflow:hidden;
+    }
+
+    .swiper-wrapper{
+      align-items:stretch;
+    }
+
+    .swiper-slide{
+      height:auto;
+    }
+
+    .course-card{
+      background:var(--card);
+      border:1px solid var(--border);
+      box-shadow:var(--shadow);
+      display:flex;
+      flex-direction:column;
+      height:100%;
+      transition:transform .28s ease, box-shadow .28s ease;
+    }
+
+    .course-card:hover{
+      transform:translateY(-5px);
+      box-shadow:0 10px 24px rgba(0,0,0,.12), 0 18px 40px rgba(0,0,0,.08);
+    }
+
+    .card-image{
+      aspect-ratio:16 / 11;
+      overflow:hidden;
+      background:#d1d5db;
+    }
+
+    .card-image img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+      transition:transform .8s ease;
+    }
+
+    .course-card:hover .card-image img{
+      transform:scale(1.06);
+    }
+
+    .card-body{
+      padding:20px 16px 14px;
+      display:flex;
+      flex-direction:column;
+      flex:1;
+    }
+
+    .card-title{
+      margin:0 0 12px;
+      font-size:24px;
+      line-height:1.1;
+      font-weight:800;
+      letter-spacing:-0.02em;
+      min-height:54px;
+    }
+
+    .card-desc{
+      margin:0 0 18px;
+      font-family:"Source Serif 4", Georgia, serif;
+      font-size:18px;
+      line-height:1.55;
+      color:#363636;
+      min-height:108px;
+    }
+
+    .meta{
+      display:grid;
+      gap:10px;
+      margin-top:auto;
+      margin-bottom:16px;
+    }
+
+    .meta-item{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      color:#3a3a3a;
+      font-size:14px;
+      font-weight:700;
+      text-transform:uppercase;
+      letter-spacing:.02em;
+    }
+
+    .meta-icon{
+      width:18px;
+      height:18px;
+      border:1.8px solid #8c8c8c;
+      color:#8c8c8c;
+      border-radius:3px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      font-size:10px;
+      line-height:1;
+      flex:0 0 auto;
+    }
+
+    .meta-icon.clock{
+      border-radius:50%;
+      font-size:11px;
+      position:relative;
+    }
+
+    .meta-icon.clock::before{
+      content:"";
+      width:1.6px;
+      height:5px;
+      background:currentColor;
+      position:absolute;
+      top:3px;
+      left:8px;
+      border-radius:999px;
+    }
+
+    .meta-icon.clock::after{
+      content:"";
+      width:4px;
+      height:1.6px;
+      background:currentColor;
+      position:absolute;
+      top:8px;
+      left:8px;
+      border-radius:999px;
+    }
+
+    .card-btn{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      width:100%;
+      min-height:42px;
+      background:var(--button);
+      border-radius:4px;
+      text-decoration:none;
+      color:#000;
+      font-size:16px;
+      font-weight:800;
+      letter-spacing:.01em;
+      text-transform:uppercase;
+      transition:transform .22s ease, filter .22s ease;
+    }
+
+    .course-card:hover .card-btn{
+      transform:translateY(-1px);
+      filter:brightness(.98);
+    }
+
+    .nav-btn{
+      position:absolute;
+      top:50%;
+      transform:translateY(-50%);
+      width:42px;
+      height:42px;
+      border:none;
+      background:transparent;
+      color:#8c8c8c;
+      cursor:pointer;
+      z-index:10;
+      transition:color .2s ease, transform .2s ease, opacity .2s ease;
+      padding:0;
+      display:grid;
+      place-items:center;
+    }
+
+    .nav-btn:hover{
+      color:#1f1f1f;
+      transform:translateY(-50%) scale(1.06);
+    }
+
+    .nav-btn.swiper-button-disabled{
+      opacity:.35;
+      cursor:default;
+    }
+
+    .nav-btn.prev{ left:0; }
+    .nav-btn.next{ right:0; }
+
+    .chevron{
+      width:15px;
+      height:15px;
+      border-top:2.5px solid currentColor;
+      border-right:2.5px solid currentColor;
+      display:block;
+    }
+
+    .chevron.left{ transform:rotate(-135deg); }
+    .chevron.right{ transform:rotate(45deg); }
+
+    .swiper-pagination{
+      position:static;
+      margin-top:28px;
+      text-align:center;
+    }
+
+    .swiper-pagination-bullet{
+      width:8px;
+      height:8px;
+      background:#b5b5b5;
+      opacity:1;
+    }
+
+    .swiper-pagination-bullet-active{
+      background:#1f1f1f;
+    }
+
+    @media (max-width: 1024px){
+      .tabs{
+        gap:18px 28px;
+        margin-bottom:24px;
+      }
+
+      .tab{
+        font-size:18px;
+      }
+
+      .carousel-shell{
+        padding:12px 42px 8px;
+      }
+
+      .card-title{
+        font-size:22px;
+        min-height:auto;
+      }
+
+      .card-desc{
+        font-size:17px;
+        min-height:96px;
+      }
+    }
+
+    @media (max-width: 640px){
+      .page{
+        padding:20px 14px 36px;
+      }
+
+      .tabs{
+        justify-content:flex-start;
+        gap:14px 20px;
+        margin-bottom:20px;
+      }
+
+      .tab{
+        font-size:17px;
+        padding-bottom:6px;
+        border-bottom-width:3px;
+      }
+
+      .carousel-shell{
+        padding:6px 0 0;
+      }
+
+      .swiper{
+        overflow:hidden;
+      }
+
+      .nav-btn{
+        display:none;
+      }
+
+      .card-body{
+        padding:18px 14px 14px;
+      }
+
+      .card-title{
+        font-size:20px;
+        margin-bottom:10px;
+      }
+
+      .card-desc{
+        font-size:16px;
+        min-height:auto;
+        margin-bottom:16px;
+      }
+
+      .meta{
+        gap:8px;
+      }
+
+      .card-btn{
+        min-height:44px;
+        font-size:15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <div class="container">
+      <nav class="tabs" aria-label="Course categories">
+        <button class="tab" data-tab="ai">AI</button>
+        <button class="tab is-active" data-tab="design">Design Thinking</button>
+        <button class="tab" data-tab="innovation">Innovation</button>
+        <button class="tab" data-tab="leadership">Leadership</button>
+        <button class="tab" data-tab="power">Power Skills</button>
+      </nav>
+
+      <section class="carousel-shell">
+        <button class="nav-btn prev" aria-label="上一张">
+          <span class="chevron left"></span>
+        </button>
+
+        <div class="swiper course-swiper" aria-label="Course carousel">
+          <div class="swiper-wrapper" id="swiper-wrapper"></div>
+          <div class="swiper-pagination"></div>
+        </div>
+
+        <button class="nav-btn next" aria-label="下一张">
+          <span class="chevron right"></span>
+        </button>
+      </section>
+    </div>
+  </main>
+
+  <script src="https://unpkg.com/swiper@11/swiper-bundle.min.js"></script>
+  <script>
+    const courseData = {
+      ai: [
+        {
+          title: 'AI Fundamentals for Teams',
+          desc: 'Build a practical foundation in AI, prompts, and everyday workflows your team can use right away.',
+          type: 'Cohort Course',
+          weeks: '4 Weeks',
+          image: 'https://placehold.co/800x600/9ca3af/ffffff.png?text=AI+01'
+        },
+        {
+          title: 'Applied Prompt Design',
+          desc: 'Learn to structure prompts, evaluate outputs, and improve quality across creative and business tasks.',
+          type: 'Cohort Course',
+          weeks: '6 Weeks',
+          image: 'https://placehold.co/800x600/9ca3af/ffffff.png?text=AI+02'
+        },
+        {
+          title: 'AI for Product Strategy',
+          desc: 'Explore where AI creates customer value and how to translate emerging capabilities into product direction.',
+          type: 'Cohort Course',
+          weeks: '5 Weeks',
+          image: 'https://placehold.co/800x600/9ca3af/ffffff.png?text=AI+03'
+        },
+        {
+          title: 'Responsible AI in Practice',
+          desc: 'Cover governance, risk, ethics, and implementation patterns for real-world AI-enabled teams.',
+          type: 'Cohort Course',
+          weeks: '3 Weeks',
+          image: 'https://placehold.co/800x600/9ca3af/ffffff.png?text=AI+04'
+        }
+      ],
+      design: [
+        {
+          title: 'AI x Design Thinking Certificate',
+          desc: 'Get certified in AI-powered design thinking. This deep-dive program combines our best frameworks with practical exercises.',
+          type: 'Cohort Course',
+          weeks: '8 Weeks',
+          image: 'https://placehold.co/800x600/9ca3af/ffffff.png?text=Course+01'
+        },
+        {
+          title: 'Insights for Innovation',
+          desc: 'Learn to use insights to turn customer needs into human-centered solutions and better product opportunities.',
+          type: 'Cohort Course',
+          weeks: '5 Weeks',
+          image: 'https://placehold.co/800x600/9ca3af/ffffff.png?text=Course+02'
+        },
+        {
+          title: 'Human-Centered Service Design',
+          desc: 'Design the moments that matter across end-to-end experiences, services, and team workflows.',
+          type: 'Cohort Course',
+          weeks: '5 Weeks',
+          image: 'https://placehold.co/800x600/9ca3af/ffffff.png?text=Course+03'
+        },
+        {
+          title: 'Journey Mapping in Action',
+          desc: 'Map needs, pain points, and touchpoints so your team can prioritize changes with greater confidence.',
+          type: 'Cohort Course',
+          weeks: '4 Weeks',
+          image: 'https://placehold.co/800x600/9ca3af/ffffff.png?text=Course+04'
+        },
+        {
+          title: 'Design Research Essentials',
+          desc: 'Use interviews, observation, and synthesis methods to identify opportunity spaces worth exploring.',
+          type: 'Cohort Course',
+          weeks: '6 Weeks',
+          image: 'https://placehold.co/800x600/9ca3af/ffffff.png?text=Course+05'
+        }
+      ],
+      innovation: [
+        {
+          title: 'Innovation Sprint Lab',
+          desc: 'Move from ideas to experiments fast with a repeatable sprint model for testing concepts and assumptions.',
+          type: 'Cohort Course',
+          weeks: '5 Weeks',
+          image: 'https://placehold.co/800x600/9ca3af/ffffff.png?text=Innovation+01'
+        },
+        {
+          title: 'Strategic Opportunity Framing',
+          desc: 'Translate ambiguity into challenge statements, priorities, and strong innovation briefs for your team.',
+          type: 'Cohort Course',
+          weeks: '4 Weeks',
+          image: 'https://placehold.co/800x600/9ca3af/ffffff.png?text=Innovation+02'
+        },
+        {
+          title: 'Prototyping New Value',
+          desc: 'Prototype offerings, flows, and concepts that help stakeholders see and evaluate future possibilities.',
+          type: 'Cohort Course',
+          weeks: '6 Weeks',
+          image: 'https://placehold.co/800x600/9ca3af/ffffff.png?text=Innovation+03'
+        },
+        {
+          title: 'Customer Experiment Design',
+          desc: 'Design lightweight tests that reduce risk and sharpen product, service, and business-model decisions.',
+          type: 'Cohort Course',
+          weeks: '4 Weeks',
+          image: 'https://placehold.co/800x600/9ca3af/ffffff.png?text=Innovation+04'
+        }
+      ],
+      leadership: [
+        {
+          title: 'Leading Change with Confidence',
+          desc: 'Equip leaders to communicate vision, align teams, and guide organizations through change effectively.',
+          type: 'Cohort Course',
+          weeks: '4 Weeks',
+          image: 'https://placehold.co/800x600/9ca3af/ffffff.png?text=Leadership+01'
+        },
+        {
+          title: 'Decision-Making for Modern Leaders',
+          desc: 'Improve judgment, prioritization, and clarity when navigating uncertainty and competing demands.',
+          type: 'Cohort Course',
+          weeks: '5 Weeks',
+          image: 'https://placehold.co/800x600/9ca3af/ffffff.png?text=Leadership+02'
+        },
+        {
+          title: 'Facilitating High-Impact Teams',
+          desc: 'Run stronger workshops, reviews, and collaborative sessions that turn discussion into action.',
+          type: 'Cohort Course',
+          weeks: '3 Weeks',
+          image: 'https://placehold.co/800x600/9ca3af/ffffff.png?text=Leadership+03'
+        },
+        {
+          title: 'Leadership Communication Studio',
+          desc: 'Craft messages that build trust, motivate teams, and land clearly with different audiences.',
+          type: 'Cohort Course',
+          weeks: '4 Weeks',
+          image: 'https://placehold.co/800x600/9ca3af/ffffff.png?text=Leadership+04'
+        }
+      ],
+      power: [
+        {
+          title: 'Storytelling for Influence',
+          desc: 'Make ideas memorable by shaping narratives that connect insight, evidence, and action.',
+          type: 'Cohort Course',
+          weeks: '3 Weeks',
+          image: 'https://placehold.co/800x600/9ca3af/ffffff.png?text=Power+01'
+        },
+        {
+          title: 'Creative Problem Solving',
+          desc: 'Use practical methods to generate options, compare tradeoffs, and move forward with confidence.',
+          type: 'Cohort Course',
+          weeks: '4 Weeks',
+          image: 'https://placehold.co/800x600/9ca3af/ffffff.png?text=Power+02'
+        },
+        {
+          title: 'Presenting with Clarity',
+          desc: 'Structure presentations that are concise, persuasive, and easy for stakeholders to follow.',
+          type: 'Cohort Course',
+          weeks: '2 Weeks',
+          image: 'https://placehold.co/800x600/9ca3af/ffffff.png?text=Power+03'
+        },
+        {
+          title: 'Collaboration That Works',
+          desc: 'Strengthen shared ownership, meeting habits, and feedback loops across cross-functional teams.',
+          type: 'Cohort Course',
+          weeks: '4 Weeks',
+          image: 'https://placehold.co/800x600/9ca3af/ffffff.png?text=Power+04'
+        }
+      ]
+    };
+
+    const wrapper = document.getElementById('swiper-wrapper');
+    const tabButtons = document.querySelectorAll('.tab');
+
+    function renderSlides(key){
+      wrapper.innerHTML = courseData[key].map(item => `
+        <article class="swiper-slide">
+          <div class="course-card">
+            <div class="card-image">
+              <img src="${item.image}" alt="${item.title}">
+            </div>
+            <div class="card-body">
+              <h2 class="card-title">${item.title}</h2>
+              <p class="card-desc">${item.desc}</p>
+
+              <div class="meta">
+                <div class="meta-item">
+                  <span class="meta-icon">⬚</span>
+                  <span>${item.type}</span>
+                </div>
+                <div class="meta-item">
+                  <span class="meta-icon clock"></span>
+                  <span>${item.weeks}</span>
+                </div>
+              </div>
+
+              <a class="card-btn" href="#">Learn More</a>
+            </div>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    renderSlides('design');
+
+    const swiper = new Swiper('.course-swiper', {
+      slidesPerView: 1,
+      spaceBetween: 16,
+      speed: 650,
+      grabCursor: true,
+      centeredSlides: false,
+      watchOverflow: true,
+      pagination: {
+        el: '.swiper-pagination',
+        clickable: true
+      },
+      navigation: {
+        nextEl: '.nav-btn.next',
+        prevEl: '.nav-btn.prev'
+      },
+      breakpoints: {
+        641: {
+          slidesPerView: 2,
+          spaceBetween: 22
+        },
+        1025: {
+          slidesPerView: 3,
+          spaceBetween: 30
+        }
+      }
+    });
+
+    tabButtons.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabButtons.forEach(btn => btn.classList.remove('is-active'));
+        tab.classList.add('is-active');
+        renderSlides(tab.dataset.tab);
+        swiper.update();
+        swiper.slideTo(0, 0);
+      });
+    });
+  </script>
+</body>
+</html>
